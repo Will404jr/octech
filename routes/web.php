@@ -101,8 +101,10 @@ Route::middleware(['setLocale'])->group(function () {
         //roles
         Route::resource('roles', RoleController::class)->names('roles')->middleware('permission:view user_roles');
         Route::resource('rates', RatesController::class)->names('rates')->middleware('permission:view rates');
+        Route::get('rates/getCurrentRates', 'RatesController@show');
         Route::post('rates-change-status', [RatesController::class, 'changeStatus'])->name('rate_change_status');
         Route::resource('ads', AdController::class)->names('ads')->middleware('permission:view ads');
+        Route::get('ads/getDisplayAds', 'AdController@show');
         Route::post('ads-change-status', [AdController::class, 'changeStatus'])->name('ad_change_status');
         Route::post('rates/get_details_by_country_code', [RatesController::class , 'get_details_by_country_code']);
 

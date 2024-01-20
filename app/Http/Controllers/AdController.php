@@ -83,6 +83,9 @@ class AdController extends Controller
     public function show($id)
     {
         //
+        return view('ad.view', [
+            'ads' => $this->ads->getAllActiveAds()
+        ]);
     }
 
     /**

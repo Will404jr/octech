@@ -93,7 +93,9 @@ class RatesController extends Controller
      */
     public function show($id)
     {
-        //
+        return view('rate.view', [
+            'rates' => $this->rates->getAllActiveRates()
+        ]);
     }
 
     /**
