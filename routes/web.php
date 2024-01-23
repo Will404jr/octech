@@ -10,6 +10,7 @@ use App\Http\Controllers\CallController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DisplayController;
+use App\Http\Controllers\MarqueeController;
 use App\Http\Controllers\RatesController;
 use App\Http\Controllers\ReasonController;
 use App\Http\Controllers\ReportController;
@@ -36,6 +37,7 @@ Route::get('login', [AuthController::class, 'index'])->name('login')->middleware
 Route::post('login-post', [AuthController::class, 'authenticate'])->name('post_login');
 Route::get('rates/getCurrentRates', [RatesController::class, 'show']);
 Route::get('ads/getDisplayAds', [AdController::class, 'show']);
+Route::get('marquee/getMarqueeText', [MarqueeController::class, 'show']);
 Route::middleware(['setLocale'])->group(function () {
     Route::middleware(['auth'])->group(function () {
         //user

@@ -122,6 +122,7 @@ return [
     'user_page' => [
         'users' => 'Users',
         'name' => 'Name',
+        'user_name' => 'Username',
         'email' => 'Email',
         'action' => 'Action',
         'add user' => 'Add user',
