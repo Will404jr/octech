@@ -36,7 +36,8 @@
                                             <thead>
                                                 <tr>
                                                     <th width="10px">#</th>
-                                                    <th width=65%>{{__('messages.ad_page.name')}}</th>
+                                                    <th>{{__('messages.ad_page.name')}}</th>
+                                                    <th>{{__('messages.ad_page.branch')}}</th>
                                                     <th>{{__('messages.ad_page.status')}}</th>
                                                     <th>{{__('messages.ad_page.action')}}</th>
                                                 </tr>
@@ -46,6 +47,7 @@
                                                 <tr>
                                                     <td>{{$key+1}}</td>
                                                     <td>{{$ad->name}}</td>
+                                                    <td>{{$ad->branch->name}}</td>
                                                     <td>
                                                         <div class="switch">
                                                             <label>

@@ -21,20 +21,20 @@ class IsInstalled
     {
         try {
             DB::connection()->getPdo();
-            if (file_exists(base_path('/app/Http/Controllers/InstallerController.php')) && file_exists(base_path('/app/Repositories/InstallerRepository.php')) && file_exists(base_path('/config/installer.php')) && Setting::first() && Setting::first()->installed == 0) {
-                return redirect()->route('install');
-            } else if (file_exists(base_path('/app/Http/Controllers/InstallerController.php')) && file_exists(base_path('/app/Repositories/InstallerRepository.php')) && file_exists(base_path('/config/installer.php')) && Setting::first() && Setting::first()->installed == 1) {
+            // if (file_exists(base_path('/app/Http/Controllers/InstallerController.php')) && file_exists(base_path('/app/Repositories/InstallerRepository.php')) && file_exists(base_path('/config/installer.php')) && Setting::first() && Setting::first()->installed == 0) {
+            //     return redirect()->route('install');
+            // } else if (file_exists(base_path('/app/Http/Controllers/InstallerController.php')) && file_exists(base_path('/app/Repositories/InstallerRepository.php')) && file_exists(base_path('/config/installer.php')) && Setting::first() && Setting::first()->installed == 1) {
                 if ($request->path() != 'login') return redirect()->route('login');
-            } else if (!file_exists(base_path('/app/Http/Controllers/InstallerController.php')) && !file_exists(base_path('/app/Repositories/InstallerRepository.php')) && !file_exists(base_path('/config/installer.php')) && Setting::first() && Setting::first()->installed == 2) {
-            } else {
-                Setting::first();
-                return redirect()->route('files-currupted');
-            }
+            // } else if (!file_exists(base_path('/app/Http/Controllers/InstallerController.php')) && !file_exists(base_path('/app/Repositories/InstallerRepository.php')) && !file_exists(base_path('/config/installer.php')) && Setting::first() && Setting::first()->installed == 2) {
+            // } else {
+            //     Setting::first();
+            //     return redirect()->route('files-currupted');
+            // }
         } catch (Throwable $th) {
-            if (file_exists(base_path('/app/Http/Controllers/InstallerController.php')) && file_exists(base_path('/app/Repositories/InstallerRepository.php')) && file_exists(base_path('/config/installer.php'))) {
-                return redirect()->route('install');
-            }
-            return redirect()->route('files-currupted');
+            // if (file_exists(base_path('/app/Http/Controllers/InstallerController.php')) && file_exists(base_path('/app/Repositories/InstallerRepository.php')) && file_exists(base_path('/config/installer.php'))) {
+            //     return redirect()->route('install');
+            // }
+            // return redirect()->route('files-currupted');
         }
         return $next($request);
     }

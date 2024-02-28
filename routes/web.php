@@ -36,7 +36,7 @@ Route::get('/', [AuthController::class, 'home'])->name('home');
 Route::get('login', [AuthController::class, 'index'])->name('login')->middleware('guest:web');
 Route::post('login-post', [AuthController::class, 'authenticate'])->name('post_login');
 Route::get('rates/getCurrentRates', [RatesController::class, 'show']);
-Route::get('ads/getDisplayAds', [AdController::class, 'show']);
+Route::get('ads/getDisplayAds/{branch_id}', [AdController::class, 'show']);
 Route::get('marquee/getMarqueeText', [MarqueeController::class, 'show']);
 Route::middleware(['setLocale'])->group(function () {
     Route::middleware(['auth'])->group(function () {

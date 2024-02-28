@@ -44,6 +44,15 @@
                                                 @endif
                                             </div>
                                         </div>
+                                        <div class="input-field col s12">
+                                            <label for="local_network_address">{{__('messages.branch_page.local_network_address')}}</label>
+                                            <input id="local_network_address" name="local_network_address" type="text" value="{{$branch->local_network_address}}" data-error=".local_network_address">
+                                            <div class="local_network_address">
+                                                @if ($errors->has('local_network_address'))
+                                                <span class="text-danger errbk">{{ $errors->first('local_network_address') }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="input-field col s12">
                                         <button class="btn waves-effect waves-light right submit" type="submit" name="action">{{__('messages.common.update')}}
@@ -74,6 +83,9 @@
                     required: true,
                 },
                 address: {
+                    required: true,
+                },
+                local_network_address: {
                     required: true,
                 }
             },

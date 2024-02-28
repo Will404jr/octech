@@ -37,25 +37,23 @@
                                                 <tr>
                                                     <th width="10px">#</th>
                                                     <th>{{__('messages.user_page.user_name')}}</th>
-                                                    <th>{{__('messages.user_page.name')}}</th>
+                                                    <th>{{__('messages.user_page.full_name')}}</th>
                                                     <th>{{__('messages.user_page.action')}}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach($users as $key=>$user)
-                                                <tr>
                                                     @if($user->username != 'admin')
-                                                    <td>{{$key+1}}</td>
-                                                    <td>{{$user->username}}</td>
-                                                    <td>{{$user->first_name}} {{$user->last_name}}</td>
-                                                    <td>
-                                                        <a class="btn-floating btn-action waves-effect waves-light orange tooltipped" href="{{route('users.edit',[$user->id])}}" data-position=top data-tooltip="{{__('messages.common.edit')}}"><i class="material-icons">edit</i></a>
-
-                                                        <a class="btn-floating btn-action waves-effect waves-light red tooltipped frmsubmit" href="{{route('users.destroy',[$user->id])}}" data-position=top data-tooltip="{{__('messages.common.delete')}}" method="DELETE" {{ $user->id == 1 ? 'disabled':''}}><i class="material-icons">delete</i></a>
-
-                                                    </td>
+                                                    <tr>
+                                                        <td>{{$key+1}}</td>
+                                                        <td>{{$user->username}}</td>
+                                                        <td>{{$user->first_name}} {{$user->last_name}}</td>
+                                                        <td>
+                                                            <a class="btn-floating btn-action waves-effect waves-light orange tooltipped" href="{{route('users.edit',[$user->id])}}" data-position=top data-tooltip="{{__('messages.common.edit')}}"><i class="material-icons">edit</i></a>
+                                                            <a class="btn-floating btn-action waves-effect waves-light red tooltipped frmsubmit" href="{{route('users.destroy',[$user->id])}}" data-position=top data-tooltip="{{__('messages.common.delete')}}" method="DELETE" {{ $user->id == 1 ? 'disabled':''}}><i class="material-icons">delete</i></a>
+                                                        </td>
+                                                    </tr>
                                                     @endif
-                                                </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>

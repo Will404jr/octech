@@ -111,6 +111,7 @@ return [
     'ad_page' => [
         'ads' => 'Display Ads',
         'name' => 'Name',
+        'branch' => 'Branch',
         'ad_img' => 'Image Ad',
         'status' => 'Status',
         'action' => 'Action',
@@ -121,8 +122,10 @@ return [
     ],
     'user_page' => [
         'users' => 'Users',
-        'name' => 'Name',
-        'user_name' => 'Username',
+        'first_name' => 'First Name',
+        'full_name' => 'Full Name',
+        'last_name' => 'Last Name',
+        'user_name' => 'User Name',
         'email' => 'Email',
         'action' => 'Action',
         'add user' => 'Add user',
@@ -136,6 +139,7 @@ return [
         'branches' => 'Branches',
         'name' => 'Name',
         'address' => 'Address',
+        'local_network_address' => 'Local Network Address',
         'action' => 'Action',
         'branch' => 'Branch',
         'add branch' => 'Add Branch',

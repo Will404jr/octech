@@ -23,6 +23,10 @@
     <li class="bold"><a class="waves-effect waves-cyan @yield('roles') " href="{{route('roles.index')}}"><i class="material-icons">verified_user</i><span class="menu-title" data-i18n="Kanban">{{__('messages.menu.user roles')}}</span></a>
     </li>
     @endcan
+    @can('view queues')
+    <li class="bold"><a class="waves-effect waves-cyan @yield('queues') " href="{{route('queues.index')}}"><i class="material-icons">subject</i><span class="menu-title" data-i18n="Kanban">{{__('messages.menu.queues')}}</span></a>
+    </li>
+    @endcan
     <!-- @can('call token')
     <li class="bold"><a class="waves-effect waves-cyan @yield('call') " href="{{route('show_call_page')}}"><i class="material-icons">call</i><span class="menu-title" data-i18n="Kanban">{{__('messages.menu.call')}}</span></a>
     </li>
@@ -39,10 +43,6 @@
     <li class="bold"><a class="waves-effect waves-cyan @yield('ad') " href="{{route('ads.index')}}"><i class="material-icons">airplay</i><span class="menu-title" data-i18n="Kanban">{{__('messages.menu.ads')}}</span></a>
     </li>
     @endcan
-    <!-- @can('view queues')
-    <li class="bold"><a class="waves-effect waves-cyan @yield('queues') " href="{{route('queues.index')}}"><i class="material-icons">subject</i><span class="menu-title" data-i18n="Kanban">{{__('messages.menu.queues')}}</span></a>
-    </li>
-    @endcan -->
     @can('view settings')
     <li class="bold"><a class="waves-effect waves-cyan @yield('settings')" href="{{route('settings')}}"><i class="material-icons">settings</i><span class="menu-title" data-i18n="Kanban">{{__('messages.menu.settings')}}</span></a>
     </li>

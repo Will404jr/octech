@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ad;
+use App\Models\Branch;
 use App\Repositories\AdRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -46,7 +47,7 @@ class AdController extends Controller
      */
     public function create()
     {
-        return view('ad.create');
+        return view('ad.create',['branches' => Branch::get()]);
     }
 
     /**
@@ -60,6 +61,7 @@ class AdController extends Controller
         try {
             $request->validate([
                 'name' => 'required|unique:ads',
+                'branch_id' => 'required',
                 'ad_img' => 'required'
             ]);
         DB::beginTransaction();
@@ -80,11 +82,11 @@ class AdController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show(Request $request)
     {
         //
         return view('ad.view', [
-            'ads' => $this->ads->getAllActiveAds()
+            'ads' => $this->ads->getAdByBranchId($request->branch_id)
         ]);
     }
 
@@ -98,6 +100,7 @@ class AdController extends Controller
     {
         return view('ad.edit', [
             'ad' => $ad,
+            'branches' => Branch::get(),
         ]);
     }
 

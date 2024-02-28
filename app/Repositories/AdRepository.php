@@ -19,13 +19,18 @@ class AdRepository
         return Ad::find($id);
     }
 
+    public function getAdByBranchId($branchId)
+    {
+        return Ad::where('branch_id', $branchId)->where('status', true)->get();
+    }
+
     public function create($data)
     {
         $branchId = auth()->user()->branch_id;
         $path = (isset($data['ad_img']) && $data['ad_img']->isValid() ? $data['ad_img']->store('posts', 'public') : null);
         $ad = Ad::create([
             'name' => $data['name'],
-            'branch_id' => $branchId,
+            'branch_id' => $data['branch_id'],
             'ad_img' => $path,
             'status' => 1
         ]);

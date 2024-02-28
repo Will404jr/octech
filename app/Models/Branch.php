@@ -21,7 +21,8 @@ class Branch extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'address'
+        'address',
+        'local_network_address'
     ];
 
 }

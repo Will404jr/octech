@@ -44,15 +44,15 @@ class RouteServiceProvider extends ServiceProvider
             ->namespace($this->namespace)
             ->group(base_path('routes/api.php'));
 
-            Route::get('files-currupted', [AuthController::class, 'filesCurrupted'])->name('files-currupted');
+            // Route::get('files-currupted', [AuthController::class, 'filesCurrupted'])->name('files-currupted');
 
-            Route::middleware('IsInstalled', 'web')
+            Route::middleware('web')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));
 
-            Route::middleware('AlreadyInstalled')
-                ->namespace($this->namespace)
-                ->group(base_path('routes/install.php'));
+            // Route::middleware('AlreadyInstalled')
+            //     ->namespace($this->namespace)
+            //     ->group(base_path('routes/install.php'));
             // Route::fallback(function () {
             //     return view('error.404');
             // });

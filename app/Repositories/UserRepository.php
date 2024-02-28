@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Spatie\Permission\Models\Role;
 
 class UserRepository
 {
@@ -13,8 +14,12 @@ class UserRepository
     {
         $path = (isset($data['image'])&&$data['image']->isValid()?$data['image']->store('profile','public'):null);
        $user = User::create([
-            'name' => $data['name'],
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'username' => $data['user_name'],
             'email' => $data['email'],
+            'title' => strtoupper(Role::where('id', $data['role'])->first()->name),
+            'branch_id' => $data['branch_id'],
             'image'=> $path,
             'password' => Hash::make($data['password']),
         ]);
@@ -24,7 +29,11 @@ class UserRepository
     }
     public function update($data,$user,$from_profile=false)
     {
-        $user->name= $data['name'];
+        $user->first_name= $data['first_name'];
+        $user->last_name= $data['last_name'];
+        $user->branch_id= $data['branch_id'];
+        $user->title =  strtoupper(Role::where('id', $data['role'])->first()->name);
+        $user->username= $data['user_name'];
         $user->email= $data['email'];
         if(isset($data['password']))
         {

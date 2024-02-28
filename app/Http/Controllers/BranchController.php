@@ -64,6 +64,7 @@ class BranchController extends Controller
         $request->validate([
             'name' => 'required|unique:branches',
             'address' => 'required',
+            'local_network_address' => 'required'
         ]);
         DB::beginTransaction();
         try {

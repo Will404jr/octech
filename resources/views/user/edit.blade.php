@@ -27,11 +27,20 @@
                                 <div class="row">
                                     <div class="row form_align">
                                         <div class="input-field col s6">
-                                            <label for="name">{{__('messages.user_page.name')}}</label>
-                                            <input id="name" name="name" type="text" value="{{$user->name}}" data-error=".name">
-                                            <div class="name">
-                                                @if ($errors->has('name'))
-                                                <span class="text-danger errbk">{{ $errors->first('name') }}</span>
+                                            <label for="first_name">{{__('messages.user_page.first_name')}}</label>
+                                            <input id="first_name" name="first_name" type="text" value="{{$user->first_name}}" data-error=".first_name">
+                                            <div class="first_name">
+                                                @if ($errors->has('first_name'))
+                                                <span class="text-danger errbk">{{ $errors->first('first_name') }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="input-field col s6">
+                                            <label for="last_name">{{__('messages.user_page.last_name')}}</label>
+                                            <input id="last_name" name="last_name" type="text" value="{{$user->last_name}}" data-error=".last_name">
+                                            <div class="last_name">
+                                                @if ($errors->has('last_name'))
+                                                <span class="text-danger errbk">{{ $errors->first('last_name') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -41,6 +50,15 @@
                                             <div class="email">
                                                 @if ($errors->has('email'))
                                                 <span class="text-danger errbk">{{ $errors->first('email') }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="input-field col s6">
+                                            <label for="user_name">{{__('messages.user_page.user_name')}}</label>
+                                            <input id="user_name" name="user_name" type="text" value="{{$user->username}}" data-error=".user_name">
+                                            <div class="user_name">
+                                                @if ($errors->has('user_name'))
+                                                <span class="text-danger errbk">{{ $errors->first('user_name') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -55,20 +73,6 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        <div class="file-field input-field col s6">
-                                            <div class="btn">
-                                                <span>{{__('messages.user_page.image')}}</span>
-                                                <input type="file" name="image">
-                                            </div>
-                                            <div class="file-path-wrapper">
-                                                <input class="file-path validate" type="text">
-                                            </div>
-                                            @if ($errors->has('image'))
-                                            <span class="text-danger errbk">{{ $errors->first('image') }}</span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="row form_align">
                                         <div class="input-field col s6">
                                             <select name="role" id="user_id">
                                                 <option value="" disabled selected>{{__('messages.user_page.select role')}}</option>
@@ -80,13 +84,28 @@
                                         </div>
 
                                         <div class="input-field col s6">
-                                            <select name="branch" id="branch_id">
+                                            <select name="branch_id" id="branch_id">
                                                 <option value="" disabled selected>{{__('messages.branch_page.select branch')}}</option>
                                                 @foreach ($branches as $branch)
                                                 <option value="{{$branch->id}}" {{ $user->branch->name == $branch->name ? 'selected' : '' }}>{{$branch->name}} </option>
                                                 @endforeach
                                             </select>
                                             <label>{{__('messages.branch_page.branch')}}</label>
+                                        </div>
+
+                                        <div class="row form_align">
+                                            <div class="file-field input-field col s6">
+                                                <div class="btn">
+                                                    <span>{{__('messages.user_page.image')}}</span>
+                                                    <input type="file" name="image">
+                                                </div>
+                                                <div class="file-path-wrapper">
+                                                    <input class="file-path validate" type="text">
+                                                </div>
+                                                @if ($errors->has('image'))
+                                                <span class="text-danger errbk">{{ $errors->first('image') }}</span>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="input-field col s12">
@@ -114,7 +133,13 @@
     $(function() {
         $('#user_form').validate({
             rules: {
-                name: {
+                user_name: {
+                    required: true,
+                },
+                first_name: {
+                    required: true,
+                },
+                last_name: {
                     required: true,
                 },
                 role: {
@@ -122,7 +147,7 @@
                 },
                 email: {
                     required: true,
-                    email: true
+                    email: true,
                 },
                 password: {
                     required: true,

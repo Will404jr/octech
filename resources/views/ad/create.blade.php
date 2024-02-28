@@ -35,6 +35,21 @@
                                             </div>
                                         </div>
 
+                                        <div class="input-field col s12">
+                                            <select name="branch_id" id="branch_id">
+                                                <option value="" disabled selected>{{__('messages.branch_page.select branch')}}</option>
+                                                @foreach ($branches as $branch)
+                                                <option value="{{$branch->id}}">{{$branch->name}} </option>
+                                                @endforeach
+                                            </select>
+                                            <label>{{__('messages.branch_page.branch')}}</label>
+                                            <div class="branch">
+                                                @if ($errors->has('branch'))
+                                                <span class="text-danger errbk">{{ $errors->first('branch') }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+
                                             <div class="file-field input-field col s12">
                                                 <div class="btn">
                                                     <span>{{__('messages.ad_page.ad_img')}}</span>

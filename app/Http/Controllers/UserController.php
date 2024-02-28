@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
 
 // use Spatie\Permission\Models\Role;
@@ -58,10 +59,14 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        Log::info('a',[$request->all()]);
         $request->validate([
             'email' => 'required|email|unique:users',
-            'name' => 'required',
-            'password' => 'required|min:5',
+            'last_name' => 'required',
+            'user_name' => 'required',
+            'branch_id' => 'required',
+            'first_name' => 'required',
+            'password' => 'required|min:6',
             'role' => 'exists:roles,id'
         ]);
         DB::beginTransaction();
@@ -113,14 +118,16 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $request->validate([
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'name' => 'required',
+            // 'email' => 'required|email|unique:users,email,' . $user->id,
+            'first_name' => 'required',
+            'last_name' => 'required',
             'role' => 'required|exists:roles,id'
         ]);
         DB::beginTransaction();
         try {
             $users = $this->users->update($request->all(), $user);
         } catch (\Exception $e) {
+            Log::info('a',[$e->getMessage()]);
             DB::rollback();
             $request->session()->flash('error', 'Something Went Wrong');
             return redirect()->route('users.index');
