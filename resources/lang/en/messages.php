@@ -45,6 +45,14 @@ return [
         'counter name' => 'Counter Name',
         'edit counter' => 'Edit Counter'
     ],
+    'queue_page' => [
+        'queues' => 'Queues',
+        'reason' => 'Reason',
+        'serve' => 'Serve',
+        'ticket_no' => 'Ticket No.',
+        'time_in' => 'Time In',
+        'action' => 'Action',
+    ],
     'dashboard' => [
         'today queue' => 'Today Queue',
         'today served' => 'Today Served',
@@ -52,6 +60,7 @@ return [
         'today serving' => 'Today Serving',
         'today' => 'Today',
         'token form' => 'Token Details',
+        'ticket_details' => 'Ticket Details',
         'call center' => 'Call Center',
         'today vs yesterday' => 'Today vs Yesterday',
         'day' => 'Day',
@@ -138,6 +147,10 @@ return [
     'branch_page' => [
         'branches' => 'Branches',
         'name' => 'Name',
+        'db_host' => 'Database Host',
+        'db_name' => 'Database Name',
+        'db_user' => 'Database User',
+        'db_password' => 'Database Password',
         'address' => 'Address',
         'local_network_address' => 'Local Network Address',
         'action' => 'Action',
@@ -246,6 +259,7 @@ return [
         'choose your service' => 'Choose Your Service',
         'served' => 'Served',
         'onhold' => 'On Hold',
+        'call' => 'Next',
         'noshow' => 'No Show',
         'edit' => 'Edit',
         'edit token' => 'Edit Token Details',

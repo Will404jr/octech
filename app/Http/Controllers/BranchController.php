@@ -64,7 +64,10 @@ class BranchController extends Controller
         $request->validate([
             'name' => 'required|unique:branches',
             'address' => 'required',
-            'local_network_address' => 'required'
+            'local_network_address' => 'required',
+            'db_host' => 'required',
+            'db_name' => 'required',
+            'db_user' => 'required',
         ]);
         DB::beginTransaction();
         try {
@@ -115,6 +118,9 @@ class BranchController extends Controller
         $request->validate([
             'name' => 'required', Rule::unique('branches', 'name')->ignore($branch->id),
             'address' => 'required',
+            'db_host' => 'required',
+            'db_name' => 'required',
+            'db_user' => 'required',
         ]);
         DB::beginTransaction();
         try {

@@ -11,6 +11,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DisplayController;
 use App\Http\Controllers\MarqueeController;
+use App\Http\Controllers\QueueController;
 use App\Http\Controllers\RatesController;
 use App\Http\Controllers\ReasonController;
 use App\Http\Controllers\ReportController;
@@ -43,7 +44,7 @@ Route::middleware(['setLocale'])->group(function () {
         //user
         Route::resource('users', UserController::class)->names('users')->middleware('permission:view users');
         Route::resource('reasons',ReasonController::class)->names('reasons')->middleware('permission:view reasons');
-        Route::resource('queues',ReasonController::class)->names('queues')->middleware('permission:view queues');
+        Route::resource('queues',QueueController::class)->names('queues')->middleware('permission:view queues');
         Route::resource('branches', BranchController::class)->names('branches')->middleware('permission:view branches');
 
         Route::group(['middleware' => ['permission:view counters']], function () {
@@ -60,12 +61,13 @@ Route::middleware(['setLocale'])->group(function () {
         Route::group(['middleware' => ['permission:call token']], function () {
             Route::get('call', [CallController::class, 'showCallPage'])->name('show_call_page');
             Route::post('call-next', [CallController::class, 'callNext'])->name('call_next');
+            Route::get('serve-ticket/{ticket_id}', [QueueController::class, 'serve'])->name('queues.serve');
             // Route::post('call-next-by-id', [CallController::class, 'callNextById'])->name('call_next_by_id');
-            Route::post('serve-token', [CallController::class, 'serveToken'])->name('serve_token');
-            Route::post('call/no-show', [CallController::class, 'noShowToken'])->name('noshow-token');
+            Route::post('serve-token', [QueueController::class, 'served'])->name('serve_token');
+            Route::post('call/no-show', [QueueController::class, 'noShowToken'])->name('noshow-token');
             Route::post('call/hold-token', [CallController::class, 'holdToken'])->name('hold-token');
             Route::post('call/break-token', [CallController::class, 'breakToken'])->name('break-token');
-            Route::post('call/recall-token', [CallController::class, 'recallToken'])->name('recall_token');
+            Route::post('call/recall-token', [QueueController::class, 'recallToken'])->name('recall_token');
             Route::post('set-service-and-counter', [CallController::class, 'setServiceAndCounter'])->name('set-service-and-counter');
             Route::post('transfer-token', [CallController::class, 'transferCall'])->name('transfer-token');
             Route::post('edit-token', [CallController::class, 'editTokenDetails'])->name('edit-token');

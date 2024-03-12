@@ -21,7 +21,7 @@ class UserRepository
             'title' => strtoupper(Role::where('id', $data['role'])->first()->name),
             'branch_id' => $data['branch_id'],
             'image'=> $path,
-            'password' => Hash::make($data['password']),
+            // 'password' => Hash::make($data['password']),
         ]);
         $user->assignRole($data['role']);
         return $user;
@@ -35,10 +35,10 @@ class UserRepository
         $user->title =  strtoupper(Role::where('id', $data['role'])->first()->name);
         $user->username= $data['user_name'];
         $user->email= $data['email'];
-        if(isset($data['password']))
-        {
-            $user->password= Hash::make($data['password']);
-        }
+        // if(isset($data['password']))
+        // {
+        //     $user->password= Hash::make($data['password']);
+        // }
         if(isset($data['image']) && $data['image']->isValid())
         {
             //delete old file

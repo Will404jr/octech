@@ -22,7 +22,11 @@ class Branch extends Authenticatable
     protected $fillable = [
         'name',
         'address',
-        'local_network_address'
+        'local_network_address',
+        'db_host',
+        'db_name',
+        'db_user',
+        'db_password'
     ];
 
 }

@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Agent;
 use App\Models\Branch;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Repositories\AgentRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
 
@@ -24,10 +27,12 @@ class UserController extends Controller
      */
 
     public $users;
+    public $agents;
 
-    public function __construct(UserRepository $users)
+    public function __construct(UserRepository $users, AgentRepository $agents)
     {
         $this->users = $users;
+        $this->agents = $agents;
     }
     /**
      * Display a listing of the resource.
@@ -59,21 +64,34 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        Log::info('a',[$request->all()]);
         $request->validate([
             'email' => 'required|email|unique:users',
             'last_name' => 'required',
             'user_name' => 'required',
             'branch_id' => 'required',
             'first_name' => 'required',
-            'password' => 'required|min:6',
             'role' => 'exists:roles,id'
         ]);
         DB::beginTransaction();
         try {
             $users = $this->users->create($request->all());
+            $dbConnection = Branch::where('id', $request->branch_id)->first();
+            $dbHost = $dbConnection->db_host;
+            $dbName = $dbConnection->db_name;
+            $dbUsername = $dbConnection->db_username;
+            $dbPassword = $dbConnection->db_password;
+            DB::purge('mysqlqms');
+            Config::set('database.connections.mysqlqms', [
+                'driver' => 'mysql',
+                'host' => $dbHost,
+                'database' => $dbName,
+                'username' => $dbUsername,
+                'password' => $dbPassword
+            ]);
+            $agents = $this->agents->create($request->all());
         } catch (\Exception $e) {
             DB::rollback();
+            Log::info('User Creation', [$e->getMessage()]);
             $request->session()->flash('error', 'Something Went Wrong');
             return redirect()->route('users.index');
         }
@@ -125,7 +143,23 @@ class UserController extends Controller
         ]);
         DB::beginTransaction();
         try {
+            $agentId = $user->username;
             $users = $this->users->update($request->all(), $user);
+            $dbConnection = Branch::where('id', $user->branch_id)->first();
+            $dbHost = $dbConnection->db_host;
+            $dbName = $dbConnection->db_name;
+            $dbUsername = $dbConnection->db_username;
+            $dbPassword = $dbConnection->db_password;
+            DB::purge('mysqlqms');
+            Config::set('database.connections.mysqlqms', [
+                'driver' => 'mysql',
+                'host' => $dbHost,
+                'database' => $dbName,
+                'username' => $dbUsername,
+                'password' => $dbPassword
+            ]);
+            $agent = Agent::where('id', $agentId)->first();
+            $agents = $this->agents->update($request->all(), $agent);
         } catch (\Exception $e) {
             Log::info('a',[$e->getMessage()]);
             DB::rollback();
@@ -152,7 +186,24 @@ class UserController extends Controller
         } else {
             DB::beginTransaction();
             try {
+                $branchId = $user->branch_id;
+                $agentId = $user->username;
                 $user = $this->users->delete($request->all(), $user);
+                $dbConnection = Branch::where('id', $branchId)->first();
+                $dbHost = $dbConnection->db_host;
+                $dbName = $dbConnection->db_name;
+                $dbUsername = $dbConnection->db_username;
+                $dbPassword = $dbConnection->db_password;
+                DB::purge('mysqlqms');
+                Config::set('database.connections.mysqlqms', [
+                    'driver' => 'mysql',
+                    'host' => $dbHost,
+                    'database' => $dbName,
+                    'username' => $dbUsername,
+                    'password' => $dbPassword
+                ]);
+                $agent = Agent::where('id', $agentId)->first();
+                $agent = $this->agents->delete($request->all(), $agent);
             } catch (\Exception $e) {
                 DB::rollback();
                 $request->session()->flash('error', 'Something Went Wrong');

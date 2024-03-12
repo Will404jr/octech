@@ -63,21 +63,12 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        <div class="input-field col s6">
-                                            <label for="password">{{__('messages.user_page.password')}}</label>
-                                            <input id="password" name="password" type="password" value="{{old('password')}}" data-error=".password">
-                                            <div class="password">
-                                                @if ($errors->has('password'))
-                                                <span class="text-danger errbk">{{ $errors->first('password') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
                                         <div class="row form_align">
                                             <div class="input-field col s6">
                                                 <select name="role" id="user_id">
                                                     <option value="" disabled selected>{{__('messages.user_page.select role')}}</option>
                                                     @foreach ($roles as $role)
-                                                    <option value="{{$role->id}}">{{$role->name}} </option>
+                                                    <option value="{{$role->id}}" {{ $role->name == 'QMS-CSO' ? 'selected' : '' }}>{{$role->name}} </option>
                                                     @endforeach
                                                 </select>
                                                 <label>{{__('messages.user_page.role')}}</label>
@@ -157,10 +148,6 @@
                 email: {
                     required: true,
                     email: true,
-                },
-                password: {
-                    required: true,
-                    minlength: 5
                 },
                 image: {
                     accept: "jpg|jpeg|png"

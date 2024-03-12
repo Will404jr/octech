@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Consts\CallStatuses;
 use App\Jobs\SendSmsJob;
+use App\Models\Branch;
 use App\Models\Call;
 use App\Models\Counter;
 use App\Models\Queue;
@@ -19,6 +20,7 @@ use App\Repositories\TokenRepository;
 use App\Repositories\UserRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -251,15 +253,22 @@ class CallController extends Controller
         ]);
         DB::beginTransaction();
         try {
-            $call = Call::where('id', $request->call_id)->whereNull('call_status_id')->first();
-            if ($call) {
-                $call = $this->callRepository->serveToken($call);
-                $settings = Setting::first();
-                if ($call->queue->service->sms_enabled && $call->queue->service->completed_message_enabled && $call->queue->phone && $settings->sms_url) {
-                    SendSmsJob::dispatch($call->queue, $call->queue->service->call_message_format, $settings, 'served');
-                }
-                $this->callRepository->setCallsForDisplay($call->service);
-                $this->tokenRepository->setTokensOnFile();
+            $ticket = Queue::where('id', $request->call_id)->where('status', 'Assigned')->first();
+            if ($ticket) {
+                $dbConnection = Branch::where('id', $ticket->branch)->first();
+                $dbHost = $dbConnection->db_host;
+                $dbName = $dbConnection->db_name;
+                $dbUsername = $dbConnection->db_username;
+                $dbPassword = $dbConnection->db_password;
+                DB::purge('mysqlqms');
+                Config::set('database.connections.mysqlqms', [
+                    'driver' => 'mysql',
+                    'host' => $dbHost,
+                    'database' => $dbName,
+                    'username' => $dbUsername,
+                    'password' => $dbPassword
+                ]);
+                $call = $this->callRepository->serveToken($ticket);
             } else {
                 return response()->json(['already_executed' => true]);
             }

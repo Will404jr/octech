@@ -8,31 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Queue extends Model
 {
-    use HasFactory;
+    protected $table = 'member_visits';
+    protected $connection = 'mysqlqms';
+    public $timestamps = false;
     protected $fillable = [
-        'service_id', 'branch_id', 'number','called','letter','reference_no','phone','payment_mode','gender','position'
+        'service_start', 'time_out', 'status', 'agent_assigned', 'comment',
     ];
 
-    protected $appends = ['formated_date','token_number'];
-
-    public function service(){
-        return $this->belongsTo(Service::class);
-    }
-
-    public function getFormatedDateAttribute($value){
-        $date = Carbon::parse($this->created_at)->format('j-F-Y');
-        return $date;
-    }
-    public function call(){
-        return $this->hasOne(Call::class);
-    }
-
-    public function getTokenNumberAttribute(){
-        return $this->letter.'-'.$this->number;
-    }
-
-    public function branch()
-    {
-        return $this->belongsTo(Branch::class, 'branch_id');
-    }
 }

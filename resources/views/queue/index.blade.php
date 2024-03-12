@@ -1,6 +1,6 @@
 @extends('layout.app')
-@section('title','Reasons')
-@section('reason','active')
+@section('title','Queues')
+@section('queues','active')
 @section('css')
 <link rel="stylesheet" type="text/css" href="{{asset('app-assets/vendors/data-tables/css/jquery.dataTables.min.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('app-assets/vendors/data-tables/extensions/responsive/css/responsive.dataTables.min.css')}}">
@@ -13,7 +13,7 @@
         <div class="container">
             <div class="row">
                 <div class="col s12 m12 l12">
-                    <h5 class="breadcrumbs-title col s5"><b>{{__('messages.queue_page.queue')}}</b></h5>
+                    <h5 class="breadcrumbs-title col s5"><b>{{__('messages.queue_page.queues')}}</b></h5>
                 </div>
             </div>
         </div>
@@ -31,20 +31,21 @@
                                             <thead>
                                                 <tr>
                                                     <th width="10px">#</th>
-                                                    <th>{{__('messages.reason_page.code')}}</th>
-                                                    <th>{{__('messages.reason_page.description')}}</th>
-                                                    <th>{{__('messages.reason_page.action')}}</th>
+                                                    <th>{{__('messages.queue_page.ticket_no')}}</th>
+                                                    <th>{{__('messages.queue_page.reason')}}</th>
+                                                    <th>{{__('messages.queue_page.time_in')}}</th>
+                                                    <th>{{__('messages.queue_page.action')}}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach($queues as $key=>$queue)
                                                 <tr>
                                                     <td>{{$key+1}}</td>
-                                                    <td>{{$reason->code}}</td>
-                                                    <td>{{$reason->description}}</td>
+                                                    <td>{{$queue->ticket_id}}</td>
+                                                    <td>{{$queue->reason_for_visit}}</td>
+                                                    <td>{{$queue->time_in}}</td>
                                                     <td>
-                                                        <a class="btn-floating btn-action waves-effect waves-light orange tooltipped" href="{{route('reasons.edit',[$reason->id])}}" data-position=top data-tooltip="{{__('messages.common.edit')}}"><i class="material-icons">edit</i></a>
-                                                        <a class="btn-floating btn-action waves-effect waves-light red tooltipped frmsubmit" href="{{route('reasons.destroy',[$reason->id])}}" data-position=top data-tooltip="{{__('messages.common.delete')}}" method="DELETE" {{ $reason->id == 1 ? 'disabled':''}}><i class="material-icons">delete</i></a>
+                                                        <a class="btn-floating btn-action waves-effect waves-light green tooltipped" href="{{route('queues.serve',[$queue->id])}}" data-position=top data-tooltip="{{__('messages.queue_page.serve')}}"><i class="material-icons">call</i></a>
                                                     </td>
                                                 </tr>
                                                 @endforeach

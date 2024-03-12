@@ -43,12 +43,48 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        <div class="input-field col s12">
+                                        <div class="input-field col s6">
                                             <label for="local_network_address">{{__('messages.branch_page.local_network_address')}}</label>
                                             <input id="local_network_address" name="local_network_address" type="text" value="{{old('local_network_address')}}" data-error=".local_network_address">
                                             <div class="local_network_address">
                                                 @if ($errors->has('local_network_address'))
                                                 <span class="text-danger errbk">{{ $errors->first('local_network_address') }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="input-field col s6">
+                                            <label for="db_host">{{__('messages.branch_page.db_host')}}</label>
+                                            <input id="db_host" name="db_host" type="text" value="{{old('db_host')}}" data-error=".db_host">
+                                            <div class="db_host">
+                                                @if ($errors->has('db_host'))
+                                                <span class="text-danger errbk">{{ $errors->first('db_host') }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="input-field col s6">
+                                            <label for="db_name">{{__('messages.branch_page.db_name')}}</label>
+                                            <input id="db_name" name="db_name" type="text" value="{{old('db_name')}}" data-error=".db_name">
+                                            <div class="db_name">
+                                                @if ($errors->has('db_name'))
+                                                <span class="text-danger errbk">{{ $errors->first('db_name') }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="input-field col s6">
+                                            <label for="db_user">{{__('messages.branch_page.db_user')}}</label>
+                                            <input id="db_user" name="db_user" type="text" value="{{old('db_user')}}" data-error=".db_user">
+                                            <div class="db_user">
+                                                @if ($errors->has('db_user'))
+                                                <span class="text-danger errbk">{{ $errors->first('db_user') }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="input-field col s6">
+                                            <label for="db_password">{{__('messages.branch_page.db_password')}}</label>
+                                            <input id="db_password" name="db_name" type="text" value="{{old('db_password')}}" data-error=".db_password">
+                                            <div class="db_password">
+                                                @if ($errors->has('db_password'))
+                                                <span class="text-danger errbk">{{ $errors->first('db_password') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -85,6 +121,15 @@
                     required: true,
                 },
                 local_network_address: {
+                    required: true,
+                },
+                db_host: {
+                    required: true,
+                },
+                db_name: {
+                    required: true,
+                },
+                db_user: {
                     required: true,
                 },
             },
