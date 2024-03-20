@@ -46,7 +46,6 @@ Route::middleware(['setLocale'])->group(function () {
         Route::resource('reasons',ReasonController::class)->names('reasons')->middleware('permission:view reasons');
         Route::resource('queues',QueueController::class)->names('queues')->middleware('permission:view queues');
         Route::resource('branches', BranchController::class)->names('branches')->middleware('permission:view branches');
-
         Route::group(['middleware' => ['permission:view counters']], function () {
             Route::post('counter-change-status', [CounterController::class, 'changeStatus'])->name('counter_change_status');
             Route::resource('counters', CounterController::class)->names('counters');
@@ -60,7 +59,7 @@ Route::middleware(['setLocale'])->group(function () {
 
         Route::group(['middleware' => ['permission:call token']], function () {
             Route::get('call', [CallController::class, 'showCallPage'])->name('show_call_page');
-            Route::post('call-next', [CallController::class, 'callNext'])->name('call_next');
+            Route::get('call-next', [QueueController::class, 'callNext'])->name('call_next');
             Route::get('serve-ticket/{ticket_id}', [QueueController::class, 'serve'])->name('queues.serve');
             // Route::post('call-next-by-id', [CallController::class, 'callNextById'])->name('call_next_by_id');
             Route::post('serve-token', [QueueController::class, 'served'])->name('serve_token');
@@ -70,9 +69,9 @@ Route::middleware(['setLocale'])->group(function () {
             Route::post('call/recall-token', [QueueController::class, 'recallToken'])->name('recall_token');
             Route::post('set-service-and-counter', [CallController::class, 'setServiceAndCounter'])->name('set-service-and-counter');
             Route::post('transfer-token', [CallController::class, 'transferCall'])->name('transfer-token');
-            Route::post('edit-token', [CallController::class, 'editTokenDetails'])->name('edit-token');
+            Route::post('edit-token', [QueueController::class, 'editTokenDetails'])->name('edit-token');
             Route::get('get-token-for-call', [CallController::class, 'getTokensForCall'])->name('get-token-for-call');
-            Route::get('get-queue-data', [CallController::class, 'getQueueData'])->name('get-queue-data');
+            Route::get('get-queue-data', [QueueController::class, 'getQueueData'])->name('get-queue-data');
             Route::get('get-services-counters', [CallController::class, 'getAllServicesAndCounters'])->name('get-services-counters');
             Route::get('get-called-tokens', [CallController::class, 'getCalledTokens'])->name('get-called-tokens');
         });

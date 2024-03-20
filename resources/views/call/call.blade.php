@@ -126,7 +126,7 @@
 
                         </div>
                         <div class="input-field col s6">
-                            <button class="btn waves-effect waves-light center submit call-bt" type="submit" @click="recallToken(token.id)" name="action" style="min-width:165px" :disabled="!isCalled || recallClicked || breakClicked">{{__('messages.call_page.recall')}}
+                            <button class="btn waves-effect waves-light center submit call-bt" type="submit" @click="recallToken(token.id)" name="action" style="min-width:165px" :disabled="!isCalled || breakClicked">{{__('messages.call_page.recall')}}
                                 <i class="material-icons right">replay</i>
                             </button>
                         </div>
@@ -143,7 +143,7 @@
                             </button>
                         </div>
                         <div class="input-field col s6">
-                            <button id="next_call" class="btn waves-effect waves-light center call-bt submit " type="submit" style="min-width:165px;" @click="openSetTransferModal(token.id)" name="action"  :disabled="isCalled || recallClicked || breakClicked">{{__('messages.call_page.call')}}
+                            <button id="next_call" class="btn waves-effect waves-light center call-bt submit " type="submit" style="min-width:165px;" @click="callNext()" name="action"  :disabled="isCalled || breakClicked">{{__('messages.call_page.call')}}
                                 <i class="material-icons right">call</i>
                             </button>
                         </div>
@@ -156,7 +156,7 @@
                         </div>
 
                         <div class="input-field col s6">
-                            <button class="btn waves-effect waves-light center submit call-bt" type="submit" name="action" @click="breakToken(token.id)" :disabled="isCalled || breakClicked" style="min-width:165px;">{{__('messages.call_page.break')}}
+                            <button class="btn waves-effect waves-light center submit call-bt" type="submit" name="action" @click="breakToken()" :disabled="isCalled || breakClicked" style="min-width:165px;">{{__('messages.call_page.break')}}
                                 <i class="material-icons right">pause</i>
                             </button>
                         </div>
@@ -292,6 +292,7 @@
         hold_token_url: "{{route('hold-token')}}",
         break_token_url: "{{route('break-token')}}",
         recall_token_url: "{{route('recall_token')}}",
+        get_queue_data: "{{ route('get-queue-data')}}",
         selectedCounter: 'Manager',
         selectedService: 'Manager',
         selectedTicket: ('{!!$ticket != null ? $ticket->toJson() : null!!}'),

@@ -31,7 +31,7 @@
   @endif
   <link rel="stylesheet" type="text/css" href="{{asset('app-assets/css/loader/normalize.css')}}">
   <link rel="stylesheet" type="text/css" href="{{ asset('public/css/app.css') }}">
-  <script src="{{asset('app-assets/js/voice.js?key=WfWmvaX0')}}"></script>
+  <!-- <script src="{{asset('app-assets/js/voice.js?key=WfWmvaX0')}}"></script> -->
 
   <!-- vue js -->
   @yield('css')
@@ -183,7 +183,7 @@
   <script src="{{asset('app-assets/js/vendors.min.js')}}"></script>
   <script src="{{ asset('public/js/app.js') }}"></script>
   <script src="{{asset('app-assets/js/plugins.js')}}"></script>
-  <script src="{{asset('app-assets/js/voice.js?key=WfWmvaX0')}}"></script>
+  <!-- <script src="{{asset('app-assets/js/voice.js?key=WfWmvaX0')}}"></script> -->
   <script src="{{asset('app-assets/vendors/jquery-validation/jquery.validate.min.js')}}"></script>
 
   <!-- BEGIN VENDOR JS-->

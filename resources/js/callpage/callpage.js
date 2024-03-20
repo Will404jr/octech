@@ -55,7 +55,6 @@ if (document.getElementById("call-page")) {
       serveTicket() {
         if (this.selected_ticket) {
           this.selected_ticket = JSON.parse(this.selected_ticket);
-          console.log(this.selected_ticket);
           this.token = this.selected_ticket;
           this.isCalled = true;
           document.getElementById("phone").value = this.selected_ticket.phone;
@@ -65,6 +64,9 @@ if (document.getElementById("call-page")) {
             this.selected_ticket.comment;
           document.getElementById("reason").value =
             this.selected_ticket.reason_for_visit;
+          if (localStorage.getItem("count") <= 1) {
+            localStorage.setItem("count", "1");
+          }
           this.setDataForTimer(this.token);
         }
       },
@@ -72,10 +74,9 @@ if (document.getElementById("call-page")) {
         this.closeEditTokenModal();
         this.enableLoader();
         const data = {
-          gender: this.gender,
           phone: this.phone,
-          token: this.token,
-          payment_mode: this.payment_mode,
+          id: token.id,
+          comment: this.comment,
           reason: this.reason,
         };
         axios
@@ -93,22 +94,11 @@ if (document.getElementById("call-page")) {
                 classes: "toast-error",
               });
             } else {
-              if (this.service != res.data.reason) {
-                this.token = null;
-                this.tokens_for_next_to_call = res.data.tokens_for_call;
-                this.called_tokens = res.data.called_tokens;
-                this.isCalled = false;
-                document.getElementById("phone").value = "";
-                document.getElementById("payment_mode").value = "";
-                document.getElementById("gender").value = "";
-                document.getElementById("reason").value = "";
-              } else {
                 document.getElementById("phone").value = res.data.phone;
-                document.getElementById("payment_mode").value =
-                  res.data.payment_mode;
-                document.getElementById("gender").value = res.data.gender;
+                document.getElementById("comment").value =
+                  res.data.comment;
                 document.getElementById("reason").value = res.data.reason;
-              }
+              
               this.disableLoader();
               M.toast({ html: window?.JLToken?.edit_token_lang });
             }
@@ -126,6 +116,7 @@ if (document.getElementById("call-page")) {
           dismissible: false,
         });
         $("#edit-token").modal("open");
+        
       },
       closeEditTokenModal() {
         $("#edit-token").modal("close");
@@ -134,18 +125,16 @@ if (document.getElementById("call-page")) {
         //this.enableLoader();
         this.callNextClicked = true;
         this.holdClicked = false;
-        const data = {
-          service_id: this.selected_service.id,
-          counter_id: this.selected_counter.id,
-          by_id: false,
-        };
         axios
-          .post(window.JLToken.call_next_url, data)
+          .get(window.JLToken.call_next_url)
           .then((res) => {
             if (res.data) {
               if (res.data.no_token_found && res.data.no_token_found == true) {
-                //this.disableLoader();
-                //M.toast({ html: window?.JLToken?.no_ticket_lang, timeRemaining: 20 });
+                this.disableLoader();
+                M.toast({
+                  html: window?.JLToken?.no_ticket_lang,
+                  timeRemaining: 20,
+                });
               } else if (
                 res.data &&
                 res.data.status_code &&
@@ -153,26 +142,40 @@ if (document.getElementById("call-page")) {
               ) {
                 this.isCalled = false;
                 this.callNextClicked = false;
-                //this.disableLoader();
-                //M.toast({ html: window?.JLToken?.error_lang, classes: "toast-error" });
+                this.disableLoader();
+                M.toast({
+                  html: window?.JLToken?.error_lang,
+                  classes: "toast-error",
+                });
+              } else if (
+                res.data.already_executed &&
+                res.data.already_executed == true
+              ) {
+                this.disableLoader();
+                this.isCalled = false;
+                this.callNextClicked = false;
+                M.toast({
+                  html: window?.JLToken?.no_ticket_lang,
+                  classes: "toast-error",
+                });
               } else {
-                this.tokens_for_next_to_call =
-                  this.tokens_for_next_to_call.filter(
-                    (element) =>
-                      element.id != this.tokens_for_next_to_call[0].id
-                  );
-                this.called_tokens.unshift(res.data);
-                this.token = res.data;
-                this.slaReached = false;
-                document.getElementById("phone").value = res.data.queue.phone;
-                document.getElementById("payment_mode").value =
-                  res.data.queue.payment_mode;
-                document.getElementById("gender").value = res.data.queue.gender;
-                document.getElementById("reason").value = res.data.service.name;
-                this.setDataForTimer(this.token);
+                this.selected_ticket = res.data;
+                this.token = this.selected_ticket;
                 this.isCalled = true;
-                //this.disableLoader();
-                //M.toast({ html: window?.JLToken?.called_lang });
+                document.getElementById("phone").value =
+                  this.selected_ticket.phone;
+                document.getElementById("ticket_no").value =
+                  this.selected_ticket.ticket_id;
+                document.getElementById("comment").value =
+                  this.selected_ticket.comment;
+                document.getElementById("reason").value =
+                  this.selected_ticket.reason_for_visit;
+                localStorage.setItem("count", "1");
+
+                this.setDataForTimer(this.token);
+                this.slaReached = false;
+                this.disableLoader();
+                M.toast({ html: window?.JLToken?.called_lang });
               }
               this.callNextClicked = false;
             }
@@ -180,8 +183,12 @@ if (document.getElementById("call-page")) {
           .catch((err) => {
             this.isCalled = false;
             this.callNextClicked = false;
-            //this.disableLoader();
-            //M.toast({ html: window?.JLToken?.error_lang, classes: "toast-error" });
+            console.log(err);
+            this.disableLoader();
+            M.toast({
+              html: window?.JLToken?.error_lang,
+              classes: "toast-error",
+            });
           });
       },
       queueDetails() {
@@ -193,10 +200,8 @@ if (document.getElementById("call-page")) {
                 this.queueData = false;
               } else {
                 this.queueData = true;
-                this.today_noshow = res.data.today_noshow;
                 this.today_queue = res.data.today_queue;
                 this.today_served = res.data.today_served;
-                this.today_serving = res.data.today_serving;
               }
             }
           })
@@ -240,7 +245,6 @@ if (document.getElementById("call-page")) {
             } else {
               this.isCalled = false;
               this.servedClicked = false;
-              localStorage.setItem("count", "1");
               document.getElementById("phone").value = "";
               document.getElementById("ticket_no").value = "";
               document.getElementById("comment").value = "";
@@ -328,117 +332,15 @@ if (document.getElementById("call-page")) {
         this.holdClicked = false;
         this.count = this.countHeld;
       },
-      breakToken(id) {
-        this.enableLoader();
-        if (this.breakClicked == true) {
-          this.breakClicked = false;
-          this.playClicked = true;
-        } else {
-          this.breakClicked = true;
-          this.playClicked = false;
-        }
-        const data = {
-          call_id: id,
-          held_at_time: this.time_after_called,
-        };
-
-        axios
-          .post(window.JLToken.break_token_url, data)
-          .then((res) => {
-            if (
-              res.data &&
-              res.data.status_code &&
-              res.data.status_code == 500
-            ) {
-              this.disableLoader();
-              M.toast({
-                html: window?.JLToken?.error_lang,
-                classes: "toast-error",
-              });
-            } else if (
-              res.data &&
-              res.data.already_executed &&
-              res.data.already_executed == true
-            ) {
-              this.disableLoader();
-              M.toast({
-                html: window?.JLToken?.alredy_used_lang,
-                classes: "toast-error",
-              });
-            } else {
-              this.token = res.data;
-              this.called_tokens = this.called_tokens.filter(
-                (element) => element.id != id
-              );
-              this.called_tokens.unshift(res.data);
-              this.token = res.data;
-              if (this.breakClicked == true) {
-                this.countHeld = this.count;
-              } else {
-                this.count = this.countHeld;
-              }
-              this.disableLoader();
-              M.toast({ html: window?.JLToken?.hold_lang });
-            }
-          })
-          .catch((err) => {
-            this.disableLoader();
-            M.toast({
-              html: window?.JLToken?.error_lang,
-              classes: "toast-error",
-            });
-            this.breakClicked = false;
-          });
+      breakToken() {
+        //Named instance
+        //window.location.href = "/" + window.location.pathname.split("/")[1] + "/queues";
+        //Default Instance
+        window.location.href = "/queues";
       },
       recallToken(id) {
-        this.enableLoader();
         this.recallClicked = true;
-        this.holdClicked = false;
-        const data = {
-          id: id,
-        };
-        axios
-          .post(window.JLToken.recall_token_url, data)
-          .then((res) => {
-            if (res.data && res.data.status_code == 500) {
-              this.recallClicked = false;
-              this.isCalled = true;
-              this.disableLoader();
-              M.toast({
-                html: window?.JLToken?.error_lang,
-                classes: "toast-error",
-              });
-            } else {
-              localStorage.setItem("count", "1");
-              this.selected_ticket = JSON.parse(this.selected_ticket);
-              console.log(this.selected_ticket);
-              this.token = this.selected_ticket;
-              this.isCalled = true;
-              document.getElementById("phone").value =
-                this.selected_ticket.phone;
-              document.getElementById("ticket_no").value =
-                this.selected_ticket.ticket_id;
-              document.getElementById("comment").value =
-                this.selected_ticket.comment;
-              document.getElementById("reason").value =
-                this.selected_ticket.reason_for_visit;
-              this.setDataForTimer(this.token);
-              this.recallClicked = false;
-              this.isCalled = true;
-              this.disableLoader();
-              M.toast({ html: window?.JLToken?.recalled_lang });
-            }
-          })
-          .catch((err) => {
-            this.recallClicked = false;
-            this.isCalled = true;
-            console.log(err);
-            this.disableLoader();
-            M.toast({
-              html: window?.JLToken?.error_lang,
-              classes: "toast-error",
-            });
-          });
+        localStorage.setItem("count", "1");
       },
 
       enableLoader() {
@@ -454,6 +356,17 @@ if (document.getElementById("call-page")) {
           if (parseInt(this.count) <= 0) {
             clearInterval();
             return;
+          }
+          if (!this.isCalled) {
+            this.count = 1;
+          }
+          if (this.recallClicked) {
+            this.count = 1;
+            this.recallClicked = false;
+          }
+          if (this.servedClicked) {
+            this.count = 1;
+            this.servedClicked = false;
           }
           this.time_after_called = this.toHHMMSS(this.count);
           this.count = (parseInt(this.count) + 1).toString();
@@ -488,9 +401,7 @@ if (document.getElementById("call-page")) {
       setDataForTimer(token) {
         if (this.timer_interval) clearInterval(this.timer_interval);
         this.time_after_called = null;
-        // this.count = token.counter_time;
         this.count = localStorage.getItem("count");
-        // this.count = "1";
         this.timer();
       },
 
@@ -519,7 +430,7 @@ if (document.getElementById("call-page")) {
     },
     mounted() {
       this.hideMainMenu();
-      console.log(this.count);
+      setInterval(this.queueDetails(), 5000);
       this.serveTicket();
       //open right nav
       document.addEventListener("DOMContentLoaded", function () {
