@@ -55,7 +55,7 @@
                                 <div class="input-field col s12">
                                     <i class="material-icons prefix pt-2">person_outline</i>
                                     <input id="email" type="text" name="email" value="{{old('email')}}">
-                                    <label for="email" class="center-align">Email</label>
+                                    <label for="email" class="center-align">Email / Username</label>
                                 </div>
                             </div>
 
@@ -110,7 +110,6 @@
                 rules: {
                     email: {
                         required: true,
-                        email: true,
                     },
                     password: {
                         required: true,
@@ -118,8 +117,7 @@
                 },
                 messages: {
                     email: {
-                        required: "Please enter the email",
-                        email: "enter your correct email address"
+                        required: "Please enter the email or username",
                     },
                     password: {
                         required: "Please enter the password",

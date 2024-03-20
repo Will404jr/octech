@@ -182,8 +182,14 @@
                                         <div class="input-field col s10 offset-s1">
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label class="control-label">Reason for Visit</label>						
-                                                    <input type="text" class="form-control" name="reason" v-model = "reason" value="">
+                                                    <label class="control-label">Reason for Visit</label>
+                                                    <select type="text" class="form-control" name="reason"
+                                                        id="reason" v-model = "reason" required>
+                                                        <option disabled value = "">Reason For Visit</option>
+                                                        @foreach ($reasons as $reason)
+                                                        <option selected = "reason_id == {{$reason->id}}" value="{{$reason->id}}">{{$reason->reason}} </option>
+                                                        @endforeach
+                                                    </select>						
                                                 </div>
                                             </div>
                                         </div>

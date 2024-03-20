@@ -53,6 +53,11 @@ class QueueController extends Controller
             'username' => $dbUsername,
             'password' => $dbPassword
         ]);
+        // $reasons = Reason::all();
+        // for ($i=0; $i < count($reasons); $i++) { 
+        //     Reason::where('id', $reasons[$i]->id)->update(['reason' => trim($reasons[$i]->reason)]);
+        // }
+        // die();
         return view('queue.index', [
             'queues' => $this->queues->getAllActiveQueues()
         ]);
@@ -182,13 +187,14 @@ class QueueController extends Controller
             'username' => $dbUsername,
             'password' => $dbPassword
         ]);
-        $ticket = Queue::with('reason')->where('id', $id)->whereNull('status')->first();
+        $ticket = Queue::with('reason')->where('id', $id)->orwhere('status', NULL)->first();
         $today_queue = Queue::where('status', NULL)->count();
+        $reasons = Reason::all();
         $today_served = Queue::where('status', 'completed')->where('agent_assigned', $username)->count();
         if ($ticket != null) {
             Queue::where('id', $id)->update(['service_start' => Carbon::now(), 'agent_assigned' => $username, 'status' => 'Assigned']);
         }
-        return view('call.call', ['ticket' => $ticket, 'today_queue' => $today_queue, 'today_served' => $today_served, 'date' => Carbon::now()->toDateString(), 'show_menu' => true, 'settings' => Setting::first()]);
+        return view('call.call', ['ticket' => $ticket, 'reasons' => $reasons, 'today_queue' => $today_queue, 'today_served' => $today_served, 'date' => Carbon::now()->toDateString(), 'show_menu' => true, 'settings' => Setting::first()]);
     }
 
     public function getQueueData()
@@ -263,11 +269,12 @@ class QueueController extends Controller
                 'password' => $dbPassword
             ]);
             $ticket = Queue::with('reason')->where('id', $request->id)->first();
-            $reason = isset($request->reason) ? $request->reason : $ticket->reason->reason;
+            $reasonId = isset($request->reason) ? $request->reason : $ticket->reason->id;
+            $reason = isset($request->reason) ? Reason::where('id', $request->reason)->first()->reason : $ticket->reason->reason;
             $phone = isset($request->phone) ? $request->phone : $ticket->phone;
             $comment = isset($request->comment) ? $request->comment : $ticket->comment;
             if ($ticket != null) {
-                Queue::where('id', $ticket->id)->update(['reason_for_visit' => $reason, 'comment' => $comment, 'phone' => $phone]);
+                Queue::where('id', $ticket->id)->update(['reason_for_visit' => $reasonId, 'comment' => $comment, 'phone' => $phone]);
             } else {
                 return response()->json(['already_executed' => true]);
             }

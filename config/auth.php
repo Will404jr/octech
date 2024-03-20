@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'ldap' => [
+            'driver' => 'ldap',
+            'provider' => 'ldap_users',
+        ],
     ],
 
     /*
@@ -64,7 +69,7 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-        'ldap' => [
+        'ldap_users' => [
             'driver' => 'ldap',
             'model' => App\Models\User::class,
             'host' => env('LDAP_HOST'),

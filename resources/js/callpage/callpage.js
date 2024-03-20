@@ -10,6 +10,7 @@ if (document.getElementById("call-page")) {
         selected_counter: window.JLToken?.selectedCounter,
         selected_ticket: window.JLToken?.selectedTicket,
         service_id: null,
+        reason_id: null,
         counter_id: null,
         dataLoaded: false,
         queueData: false,
@@ -57,6 +58,7 @@ if (document.getElementById("call-page")) {
           this.selected_ticket = JSON.parse(this.selected_ticket);
           this.token = this.selected_ticket;
           this.isCalled = true;
+          this.reason_id = this.selected_ticket.reason.id;
           document.getElementById("phone").value = this.selected_ticket.phone;
           document.getElementById("ticket_no").value =
             this.selected_ticket.ticket_id;
@@ -162,6 +164,7 @@ if (document.getElementById("call-page")) {
                 this.selected_ticket = res.data;
                 this.token = this.selected_ticket;
                 this.isCalled = true;
+                this.reason_id = this.selected_ticket.reason.id;
                 document.getElementById("phone").value =
                   this.selected_ticket.phone;
                 document.getElementById("ticket_no").value =
