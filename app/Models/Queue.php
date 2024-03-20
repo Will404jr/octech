@@ -15,4 +15,9 @@ class Queue extends Model
         'service_start', 'time_out', 'status', 'agent_assigned', 'comment',
     ];
 
+
+    public function reason()
+    {
+        return $this->belongsTo(Reason::class, 'reason_for_visit');
+    }
 }

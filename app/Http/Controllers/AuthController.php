@@ -68,6 +68,87 @@ class AuthController extends Controller
     public function authenticate(Request $request)
     {
 
+        if (filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
+            $credentials = $request->validate([
+                'email' => ['required', 'email'],
+                'password' => ['required'],
+            ]);
+    
+            if (Auth::attempt($credentials)) {
+                $request->session()->regenerate();
+                $settings = Setting::first();
+                session(['settings' => $settings]);
+                if ($settings->language_id) {
+                    session(['locale' => $settings->language->code]);
+                }
+                $userId = auth()->user()->id;
+                $roles = User::where('id', $userId)->first()->getRoleNames();
+                if (!$roles->contains('Agent')) {
+                    return redirect()->route('branches', [
+                        'branches' => Branch::get()
+                    ])->with('success', 'Succesfully Logged in!');
+    
+                } else {
+                    $today_queue = Queue::where('created_at', '>=', Carbon::now()->startOfDay())->where('created_at', '<=', Carbon::now())
+                        ->where('called', false)->count();
+                    $today_served = Call::where('created_at', '>=', Carbon::now()->startOfDay())->where('created_at', '<=', Carbon::now())
+                        ->where('call_status_id', CallStatuses::SERVED)->count();
+                    $today_noshow = Call::where('created_at', '>=', Carbon::now()->startOfDay())->where('created_at', '<=', Carbon::now())
+                        ->where('call_status_id', CallStatuses::NOSHOW)->count();
+                    $today_serving = Call::where('created_at', '>=', Carbon::now()->startOfDay())->where('created_at', '<=', Carbon::now())
+                        ->whereNull('call_status_id')->count();
+                    $chart_data = $this->reportRepository->getTodayYesterdayData();
+                    $reasons = Service::all();
+                    return  redirect()->route('show_call_page')->with(['reasons' => $reasons, 'counters' => $this->counterRepository->getAllActiveCounters(), 'chart_data' => $chart_data, 'users' => $this->userRepository->getUsers(), 'today_queue' => $today_queue, 'today_noshow' => $today_noshow, 'today_serving' => $today_serving, 'today_served' => $today_served, 'services' => $this->serviceRepository->getAllActiveServices(), 'date' => Carbon::now()->toDateString(), 'show_menu' => true, 'settings' => Setting::first()]);
+                }
+            }
+    
+            return back()->withErrors([
+                'error' => 'The provided credentials do not match our records.',
+            ]);
+            
+        } else {
+
+            $credentials = $request->validate([
+                'email' => ['required'],
+                'password' => ['required'],
+            ]);
+            
+    
+            if (Auth::guard('ldap')->attempt($credentials)) {
+                $request->session()->regenerate();
+                $settings = Setting::first();
+                session(['settings' => $settings]);
+                if ($settings->language_id) {
+                    session(['locale' => $settings->language->code]);
+                }
+                $userId = auth()->user()->id;
+                $roles = User::where('id', $userId)->first()->getRoleNames();
+                if (!$roles->contains('Agent')) {
+                    return redirect()->route('branches', [
+                        'branches' => Branch::get()
+                    ])->with('success', 'Succesfully Logged in!');
+    
+                } else {
+                    $today_queue = Queue::where('created_at', '>=', Carbon::now()->startOfDay())->where('created_at', '<=', Carbon::now())
+                        ->where('called', false)->count();
+                    $today_served = Call::where('created_at', '>=', Carbon::now()->startOfDay())->where('created_at', '<=', Carbon::now())
+                        ->where('call_status_id', CallStatuses::SERVED)->count();
+                    $today_noshow = Call::where('created_at', '>=', Carbon::now()->startOfDay())->where('created_at', '<=', Carbon::now())
+                        ->where('call_status_id', CallStatuses::NOSHOW)->count();
+                    $today_serving = Call::where('created_at', '>=', Carbon::now()->startOfDay())->where('created_at', '<=', Carbon::now())
+                        ->whereNull('call_status_id')->count();
+                    $chart_data = $this->reportRepository->getTodayYesterdayData();
+                    $reasons = Service::all();
+                    return  redirect()->route('show_call_page')->with(['reasons' => $reasons, 'counters' => $this->counterRepository->getAllActiveCounters(), 'chart_data' => $chart_data, 'users' => $this->userRepository->getUsers(), 'today_queue' => $today_queue, 'today_noshow' => $today_noshow, 'today_serving' => $today_serving, 'today_served' => $today_served, 'services' => $this->serviceRepository->getAllActiveServices(), 'date' => Carbon::now()->toDateString(), 'show_menu' => true, 'settings' => Setting::first()]);
+                }
+            }
+    
+            return back()->withErrors([
+                'error' => 'The provided credentials do not match our records.',
+            ]);
+        }
+
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],

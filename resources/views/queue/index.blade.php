@@ -42,7 +42,7 @@
                                                 <tr>
                                                     <td>{{$key+1}}</td>
                                                     <td>{{$queue->ticket_id}}</td>
-                                                    <td>{{$queue->reason_for_visit}}</td>
+                                                    <td>{{$queue->reason->reason}}</td>
                                                     <td>{{$queue->time_in}}</td>
                                                     <td>
                                                         <a class="btn-floating btn-action waves-effect waves-light green tooltipped" href="{{route('queues.serve',[$queue->id])}}" data-position=top data-tooltip="{{__('messages.queue_page.serve')}}"><i class="material-icons">call</i></a>

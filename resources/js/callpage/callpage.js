@@ -63,7 +63,7 @@ if (document.getElementById("call-page")) {
           document.getElementById("comment").value =
             this.selected_ticket.comment;
           document.getElementById("reason").value =
-            this.selected_ticket.reason_for_visit;
+          this.selected_ticket.reason.reason;
           if (localStorage.getItem("count") <= 1) {
             localStorage.setItem("count", "1");
           }
@@ -168,8 +168,8 @@ if (document.getElementById("call-page")) {
                   this.selected_ticket.ticket_id;
                 document.getElementById("comment").value =
                   this.selected_ticket.comment;
-                document.getElementById("reason").value =
-                  this.selected_ticket.reason_for_visit;
+                  document.getElementById("reason").value =
+                  this.selected_ticket.reason.reason;
                 localStorage.setItem("count", "1");
 
                 this.setDataForTimer(this.token);
@@ -340,6 +340,7 @@ if (document.getElementById("call-page")) {
       },
       recallToken(id) {
         this.recallClicked = true;
+        this.slaReached = false;
         localStorage.setItem("count", "1");
       },
 

@@ -2,26 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Storage;
-use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Model;
 
-class Reason extends Authenticatable
+class Reason extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'code',
-        'description'
-    ];
-
+    protected $table = 'reasons_for_visit';
+    protected $connection = 'mysqlqms';
+    public $timestamps = false;
 }

@@ -150,7 +150,7 @@ class QueueController extends Controller
                 'username' => $dbUsername,
                 'password' => $dbPassword
             ]);
-            $ticket = Queue::where('id', $request->id)->whereIn('status', ['Assigned', 'noshow'])->first();
+            $ticket = Queue::with('reason')->where('id', $request->id)->whereIn('status', ['Assigned', 'noshow'])->first();
             if ($ticket) {
                 $ticket = $this->queues->noShowTicket($ticket);
             } else {
@@ -182,11 +182,11 @@ class QueueController extends Controller
             'username' => $dbUsername,
             'password' => $dbPassword
         ]);
-        $ticket = Queue::where('id', $id)->whereNull('status')->orWhere('status', '!=', 'completed')->first();
+        $ticket = Queue::with('reason')->where('id', $id)->whereNull('status')->first();
         $today_queue = Queue::where('status', NULL)->count();
         $today_served = Queue::where('status', 'completed')->where('agent_assigned', $username)->count();
         if ($ticket != null) {
-            Queue::where('id', $id)->update(['agent_assigned' => $username, 'status' => 'Assigned']);
+            Queue::where('id', $id)->update(['service_start' => Carbon::now(), 'agent_assigned' => $username, 'status' => 'Assigned']);
         }
         return view('call.call', ['ticket' => $ticket, 'today_queue' => $today_queue, 'today_served' => $today_served, 'date' => Carbon::now()->toDateString(), 'show_menu' => true, 'settings' => Setting::first()]);
     }
@@ -230,9 +230,9 @@ class QueueController extends Controller
                 'username' => $dbUsername,
                 'password' => $dbPassword
             ]);
-            $ticket = Queue::whereNull('status')->orWhere('status', '!=', 'completed')->first();
+            $ticket = Queue::with('reason')->whereNull('status')->first();
             if ($ticket != null) {
-                Queue::where('id', $ticket->id)->update(['agent_assigned' => $username, 'status' => 'Assigned']);
+                Queue::where('id', $ticket->id)->update(['service_start' => Carbon::now(), 'agent_assigned' => $username, 'status' => 'Assigned']);
             } else {
                 return response()->json(['already_executed' => true]);
             }
@@ -262,8 +262,8 @@ class QueueController extends Controller
                 'username' => $dbUsername,
                 'password' => $dbPassword
             ]);
-            $ticket = Queue::where('id', $request->id)->first();
-            $reason = isset($request->reason) ? $request->reason : $ticket->reason_for_visit;
+            $ticket = Queue::with('reason')->where('id', $request->id)->first();
+            $reason = isset($request->reason) ? $request->reason : $ticket->reason->reason;
             $phone = isset($request->phone) ? $request->phone : $ticket->phone;
             $comment = isset($request->comment) ? $request->comment : $ticket->comment;
             if ($ticket != null) {

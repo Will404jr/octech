@@ -10,12 +10,12 @@ class QueueRepository
 {
     public function getAllActiveQueues()
     {
-        return Queue::where('status', NULL)->get();
+        return Queue::with('reason')->where('status', NULL)->get();
     }
 
     public function getQueueById($id)
     {
-        return Queue::find($id);
+        return Queue::with('reason')->find($id);
     }
 
     public function create($data)
@@ -50,8 +50,7 @@ class QueueRepository
 
     public function noShowTicket(Queue $ticket)
     {
-
-        $ticket->agent_assigned = '';
+        $ticket->time_out = Carbon::now();
         $ticket->status = 'noshow';
         $ticket->save();
         return $ticket;
