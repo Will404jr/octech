@@ -36,6 +36,7 @@
                                             <thead>
                                                 <tr>
                                                     <th width="10px">#</th>
+                                                    <th>Branch</th>
                                                     <th>{{__('messages.user_page.user_name')}}</th>
                                                     <th>{{__('messages.user_page.full_name')}}</th>
                                                     <th>{{__('messages.user_page.action')}}</th>
@@ -46,6 +47,7 @@
                                                     @if($user->username != 'admin')
                                                     <tr>
                                                         <td>{{$key+1}}</td>
+                                                        <td>{{$user->branch->name}}</td>
                                                         <td>{{$user->username}}</td>
                                                         <td>{{$user->first_name}} {{$user->last_name}}</td>
                                                         <td>

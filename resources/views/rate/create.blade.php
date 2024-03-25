@@ -140,7 +140,7 @@
         $('#rate_form').validate({
             ignore: [],
             rules: {
-                country_name: {
+                country_name_text: {
                     required: true,
                 },
                 country_code: {

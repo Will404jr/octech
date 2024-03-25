@@ -42,7 +42,8 @@ class UserController extends Controller
     public function index()
     {
         return view('user.index', [
-            'users' => User::with('branch')->get()
+            'users' => User::with('branch')->get(),
+            'branches' => Branch::get()
         ]);
     }
 

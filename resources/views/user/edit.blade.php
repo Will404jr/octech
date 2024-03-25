@@ -68,7 +68,9 @@
                                             <select name="role" id="user_id">
                                                 <option value="" disabled selected>{{__('messages.user_page.select role')}}</option>
                                                 @foreach ($roles as $role)
-                                                <option value="{{$role->id}}" {{ $user->getRoleNames()->contains($role->name) ? 'selected' : '' }}>{{$role->name}} </option>
+                                                    @if($role->name != 'Super-Admin')
+                                                        <option value="{{$role->id}}" {{ $user->getRoleNames()->contains($role->name) ? 'selected' : '' }}>{{$role->name}} </option>
+                                                    @endif
                                                 @endforeach
                                             </select>
                                             <label>{{__('messages.user_page.role')}}</label>

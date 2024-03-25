@@ -34,7 +34,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <input name="country_name_text" type="hidden" id="country_name_text">
+                                        <input name="country_name_text" value = "{{ $rate->country_name }}" type="hidden" id="country_name_text">
                                         
                                         <div class="col s2">
                                             <img id = "country_flag" height="65px" width="60px" src="{{ $rate->country_flag }}">
@@ -140,7 +140,7 @@
         $('#rate_form').validate({
             ignore: [],
             rules: {
-                country_name: {
+                country_name_text: {
                     required: true,
                 },
                 country_code: {

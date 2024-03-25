@@ -124,18 +124,19 @@ class RatesController extends Controller
     public function update(Request $request, Rate $rate)
     {
         try {
-            $request->validate([
-                'country_name_text' => 'required',
-                'country_code' => 'required',
-                'country_flag_text' => 'required',
-                'currency_code' => 'required',
-                'buying_rate' => 'required|numeric',
-                'selling_rate' => 'required|numeric',
-            ]);
+            // $request->validate([
+            //     'country_name_text' => 'required',
+            //     'country_code' => 'required',
+            //     'country_flag_text' => 'required',
+            //     'currency_code' => 'required',
+            //     'buying_rate' => 'required|numeric',
+            //     'selling_rate' => 'required|numeric',
+            // ]);
             DB::beginTransaction();
                 $rate = $this->rates->update($request->all(), $rate);
         } catch (\Exception $e) {
             DB::rollback();
+            Log::info('a', [$e]);
             $request->session()->flash('error', 'Something Went Wrong');
             return redirect()->route('rates.index');
         }

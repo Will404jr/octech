@@ -49,9 +49,9 @@ class AdRepository
             $path = $data['ad_img']->store('posts','public');
             $ad->ad_img = $path;
         }
-        $branchId = auth()->user()->branch_id;
+        $branchId = $data['branch_id'];
         $ad->name = $data['name'];
-        $ad->ad_img = $path;
+        //$ad->ad_img = $path;
         $ad->branch_id  = $branchId;
         $ad->save();
         return $ad;

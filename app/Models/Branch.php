@@ -25,7 +25,7 @@ class Branch extends Authenticatable
         'local_network_address',
         'db_host',
         'db_name',
-        'db_user',
+        'db_username',
         'db_password'
     ];
 

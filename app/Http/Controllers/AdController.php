@@ -68,6 +68,7 @@ class AdController extends Controller
             $ad = $this->ads->create($request->all());
         } catch (\Exception $e) {
             DB::rollback();
+            Log::info('a', [$e]);
             $request->session()->flash('error', $e->getMessage());
             return redirect()->route('ads.index');
         }
@@ -114,13 +115,15 @@ class AdController extends Controller
     public function update(Request $request, Ad $ad)
     {
         try {
-            $request->validate([
-                'name' => 'required|unique:counters,name,' . $ad->id,
-            ]);
+            // $request->validate([
+            //     'name' => 'required|unique:ads',
+            //     'branch_id' => 'required',
+            // ]);
         DB::beginTransaction();
             $ad = $this->ads->update($request->all(), $ad);
         } catch (\Exception $e) {
             DB::rollback();
+            Log::info('a', [$e]);
             $request->session()->flash('error', 'Something Went Wrong');
             return redirect()->route('ads.index');
         }

@@ -40,9 +40,8 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-
         'ldap' => [
-            'driver' => 'ldap',
+            'driver' => 'session',
             'provider' => 'ldap_users',
         ],
     ],
@@ -72,13 +71,6 @@ return [
         'ldap_users' => [
             'driver' => 'ldap',
             'model' => App\Models\User::class,
-            'host' => env('LDAP_HOST'),
-            'port' => env('LDAP_PORT', 389),
-            'use_tls' => env('LDAP_USE_TLS', false),
-            'base_dn' => env('LDAP_BASE_DN'),
-            'username' => env('LDAP_ADMIN_USERNAME'),
-            'password' => env('LDAP_ADMIN_PASSWORD'),
-            'timeout' => env('LDAP_TIMEOUT', 5),
         ],
         // 'users' => [
         //     'driver' => 'database',

@@ -74,6 +74,7 @@ class BranchController extends Controller
             $branches = $this->branches->create($request->all());
         } catch (\Exception $e) {
             DB::rollback();
+            Log::info('a', [$e]);
             $request->session()->flash('error', 'Something Went Wrong');
             return redirect()->route('branches.index');
         }

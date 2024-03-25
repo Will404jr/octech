@@ -82,7 +82,7 @@
                                         </div>
                                         <div class="input-field col s6">
                                             <label for="db_password">{{__('messages.branch_page.db_password')}}</label>
-                                            <input id="db_password" name="db_password" type="text" value="{{$branch->db_password}}" data-error=".db_password">
+                                            <input id="db_password" name="db_password" type="password" value="{{$branch->db_password}}" data-error=".db_password">
                                             <div class="db_password">
                                                 @if ($errors->has('db_password'))
                                                 <span class="text-danger errbk">{{ $errors->first('db_password') }}</span>
