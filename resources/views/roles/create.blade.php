@@ -70,19 +70,19 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td>{{__('messages.user_roles_page.view counters')}}</td>
+                                                        <td>{{__('messages.user_roles_page.view branches')}}</td>
                                                         <td>
                                                             <label>
-                                                                <input type="checkbox" class="checkbox" id="counters" name="permission[view counters]" />
+                                                                <input type="checkbox" class="checkbox" id="branches" name="permission[view branches]" />
                                                                 <span></span>
                                                             </label>
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td>{{__('messages.user_roles_page.view services')}}</td>
+                                                        <td>{{__('messages.user_roles_page.view rates')}}</td>
                                                         <td>
                                                             <label>
-                                                                <input type="checkbox" class="checkbox" id="services" name="permission[view services]" />
+                                                                <input type="checkbox" class="checkbox" id="rates" name="permission[view rates]" />
                                                                 <span></span>
                                                             </label>
                                                         </td>
@@ -115,19 +115,19 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td>{{__('messages.user_roles_page.view display')}}</td>
+                                                        <td>{{__('messages.user_roles_page.view queues')}}</td>
                                                         <td>
                                                             <label>
-                                                                <input type="checkbox" class="checkbox" id="call" name="permission[view display]" />
+                                                                <input type="checkbox" class="checkbox" id="queues" name="permission[view queues]" />
                                                                 <span></span>
                                                             </label>
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td>{{__('messages.user_roles_page.view reports')}}</td>
+                                                        <td>{{__('messages.user_roles_page.view ads')}}</td>
                                                         <td>
                                                             <label>
-                                                                <input type="checkbox" class="checkbox" id="reports" name="permission[view reports]" />
+                                                                <input type="checkbox" class="checkbox" id="ads" name="permission[view ads]" />
                                                                 <span></span>
                                                             </label>
                                                         </td>

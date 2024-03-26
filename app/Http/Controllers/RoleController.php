@@ -6,6 +6,7 @@ use App\Repositories\RollRepository;
 use App\Repositories\TokenRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
@@ -38,8 +39,9 @@ class RoleController extends Controller
             $res = $this->roleRepository->create($request->all());
         } catch (\Exception $e) {
             DB::rollback();
+            Log::info('error', [$e->getMessage()]);
             $request->session()->flash('error', 'something went wrong');
-            return redirect()->route('rolls.index');
+            return redirect()->route('roles.index');
         }
         DB::commit();
         $request->session()->flash('success', 'Succesfully Added Role');
@@ -66,8 +68,9 @@ class RoleController extends Controller
             $res = $this->roleRepository->update($request->all(), $role);
         } catch (\Exception $e) {
             DB::rollback();
+            Log::info('error', [$e->getMessage()]);
             $request->session()->flash('error', 'something went wrong');
-            return redirect()->route('rolls.index');
+            return redirect()->route('roles.index');
         }
         DB::commit();
         $request->session()->flash('success', 'Succesfully Updated Role');
@@ -82,6 +85,7 @@ class RoleController extends Controller
             $role = $this->roleRepository->delete($request->all(), $role);
         } catch (\Exception $e) {
             DB::rollback();
+            Log::info('error', [$e->getMessage()]);
             $request->session()->flash('error', 'Something Went Wrong');
             return redirect()->route('roles.index');
         }

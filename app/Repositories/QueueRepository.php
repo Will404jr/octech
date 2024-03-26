@@ -10,7 +10,7 @@ class QueueRepository
 {
     public function getAllActiveQueues()
     {
-        return Queue::with('reason')->where('status', NULL)->get();
+        return Queue::with('reason')->whereDate('time_in','>=',Carbon::now()->format('Y-m-d'))->where('status', NULL)->get();
     }
 
     public function getQueueById($id)

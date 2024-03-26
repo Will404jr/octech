@@ -35,9 +35,15 @@ class AdController extends Controller
      */
     public function index()
     {
-        return view('ad.index', [
-            'ads' => Ad::get()
-        ]);
+        if (auth()->user()->roles[0]->name == 'Super-Admin') {
+            return view('ad.index', [
+                'ads' => Ad::get(),
+            ]);
+        } else {
+            return view('ad.index', [
+                'ads' => Ad::where('branch_id', auth()->user()->branch_id)->get()
+            ]);
+        }
     }
 
     /**
@@ -47,7 +53,11 @@ class AdController extends Controller
      */
     public function create()
     {
-        return view('ad.create',['branches' => Branch::get()]);
+        if (auth()->user()->roles[0]->name == 'Super-Admin') {
+            return view('ad.create',['branches' => Branch::get()]);
+        } else {
+            return view('ad.create',['branches' => Branch::where('id', auth()->user()->branch_id)->get()]);
+        }
     }
 
     /**
@@ -99,10 +109,17 @@ class AdController extends Controller
      */
     public function edit(Ad $ad)
     {
-        return view('ad.edit', [
-            'ad' => $ad,
-            'branches' => Branch::get(),
-        ]);
+        if (auth()->user()->roles[0]->name == 'Super-Admin') {
+            return view('ad.edit', [
+                'ad' => $ad,
+                'branches' => Branch::get(),
+            ]);
+        } else {
+            return view('ad.edit', [
+                'ad' => $ad,
+                'branches' => Branch::where('id', auth()->user()->branch_id)->get(),
+            ]);
+        }
     }
 
     /**

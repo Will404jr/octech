@@ -41,10 +41,17 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('user.index', [
-            'users' => User::with('branch')->get(),
-            'branches' => Branch::get()
-        ]);
+        if (auth()->user()->roles[0]->name == 'Super-Admin') {
+            return view('user.index', [
+                'users' => User::with('branch')->get(),
+                'branches' => Branch::get()
+            ]);
+        } else {
+            return view('user.index', [
+                'users' => User::with('branch')->where('branch_id', auth()->user()->branch_id)->get(),
+                'branches' => Branch::get()
+            ]);
+        }
     }
 
     /**
@@ -54,7 +61,11 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('user.create', ['roles' => Role::get(), 'branches' => Branch::get()]);
+        if (auth()->user()->roles[0]->name == 'Super-Admin') {
+            return view('user.create', ['roles' => Role::get(), 'branches' => Branch::get()]);
+        } else {
+            return view('user.create', ['roles' => Role::get(), 'branches' => Branch::where('id', auth()->user()->branch_id)->get()]);
+        }
     }
 
     /**
@@ -120,11 +131,20 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('user.edit', [
-            'user' => $user,
-            'branches' => Branch::get(),
-            'roles' => Role::get()
-        ]);
+        if (auth()->user()->roles[0]->name == 'Super-Admin') {
+            return view('user.edit', [
+                'user' => $user,
+                'branches' => Branch::get(),
+                'roles' => Role::get()
+            ]);
+        } else {
+            return view('user.edit', [
+                'user' => $user,
+                'branches' => Branch::where('id', auth()->user()->branch_id)->get(),
+                'roles' => Role::get()
+            ]);
+        }
+
     }
 
     /**
@@ -162,7 +182,7 @@ class UserController extends Controller
             $agent = Agent::where('id', $agentId)->first();
             $agents = $this->agents->update($request->all(), $agent);
         } catch (\Exception $e) {
-            Log::info('a',[$e->getMessage()]);
+            Log::info('a', [$e->getMessage()]);
             DB::rollback();
             $request->session()->flash('error', 'Something Went Wrong');
             return redirect()->route('users.index');

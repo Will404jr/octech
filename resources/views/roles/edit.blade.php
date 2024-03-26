@@ -71,19 +71,19 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td>{{__('messages.user_roles_page.view counters')}}</td>
+                                                        <td>{{__('messages.user_roles_page.view branches')}}</td>
                                                         <td>
                                                             <label>
-                                                                <input type="checkbox" class="checkbox" id="counters" name="permission[view counters]" {{ in_array('view counters', $permissions)?'checked':''}} />
+                                                                <input type="checkbox" class="checkbox" id="branches" name="permission[view branches]" {{ in_array('view branches', $permissions)?'checked':''}} />
                                                                 <span></span>
                                                             </label>
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td>{{__('messages.user_roles_page.view services')}}</td>
+                                                        <td>{{__('messages.user_roles_page.view rates')}}</td>
                                                         <td>
                                                             <label>
-                                                                <input type="checkbox" class="checkbox" id="services" name="permission[view services]" {{ in_array('view services', $permissions)?'checked':''}} />
+                                                                <input type="checkbox" class="checkbox" id="rates" name="permission[view rates]" {{ in_array('view rates', $permissions)?'checked':''}} />
                                                                 <span></span>
                                                             </label>
                                                         </td>
@@ -116,19 +116,19 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td>{{__('messages.user_roles_page.view display')}}</td>
+                                                        <td>{{__('messages.user_roles_page.view queues')}}</td>
                                                         <td>
                                                             <label>
-                                                                <input type="checkbox" class="checkbox" id="call" name="permission[view display]" {{ in_array('view display', $permissions)?'checked':''}} />
+                                                                <input type="checkbox" class="checkbox" id="queues" name="permission[view queues]" {{ in_array('view queues', $permissions)?'checked':''}} />
                                                                 <span></span>
                                                             </label>
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td>{{__('messages.user_roles_page.view reports')}}</td>
+                                                        <td>{{__('messages.user_roles_page.view ads')}}</td>
                                                         <td>
                                                             <label>
-                                                                <input type="checkbox" class="checkbox" id="reports" name="permission[view reports]" {{ in_array('view reports', $permissions)?'checked':''}} />
+                                                                <input type="checkbox" class="checkbox" id="ads" name="permission[view ads]" {{ in_array('view ads', $permissions)?'checked':''}} />
                                                                 <span></span>
                                                             </label>
                                                         </td>

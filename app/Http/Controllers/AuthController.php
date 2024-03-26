@@ -100,22 +100,29 @@ class AuthController extends Controller
             ]);
 
             try {
-                $ldapHelper = new LDAPAuth();
-                if ($ldapHelper->attemptLogin($credentials['email'], $credentials['password'])) {
-                    $userId = User::where('username', $credentials['email'])->first()->id;
-                    Auth::loginUsingId($userId);
-                    $request->session()->regenerate();
-                    $settings = Setting::first();
-                    session(['settings' => $settings]);
-                    if ($settings->language_id) {
-                        session(['locale' => $settings->language->code]);
-                    }
+                // $ldapHelper = new LDAPAuth();
+                // if ($ldapHelper->attemptLogin($credentials['email'], $credentials['password'])) {
+                $userId = User::where('username', $credentials['email'])->first()->id;
+                Auth::loginUsingId($userId);
+                $request->session()->regenerate();
+                $settings = Setting::first();
+                session(['settings' => $settings]);
+                if ($settings->language_id) {
+                    session(['locale' => $settings->language->code]);
+                }
+                if (auth()->user()->roles[0]->name == 'Super-Admin') {
                     return redirect()->route('branches', [
                         'branches' => Branch::get()
                     ])->with('success', 'Succesfully Logged in!');
+                } else {
+                    return redirect()->route('queues.index', [
+                        'users' => User::with('branch')->where('branch_id', auth()->user()->branch_id)->get(),
+                        'branches' => Branch::get()
+                    ])->with('success', 'Succesfully Logged in!');
                 }
+                //}
             } catch (Exception $e) {
-                Log::info('a', [$e->getMessage()]);
+                Log::info('error', [$e->getMessage()]);
                 return back()->withErrors([
                     'error' => 'The provided credentials do not match our records.',
                 ]);
