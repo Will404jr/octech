@@ -9,7 +9,10 @@
                 <div class="col s12 m12 l12">
                     <h5 class="breadcrumbs-title col s5"><b>{{__('messages.common.profile')}}</b></h5>
                     <ol class="breadcrumbs col s7 right-align">
-                        <a class="btn-floating waves-effect waves-light teal tooltipped" href="{{route('dashboard')}}" data-position=top data-tooltip="{{__('messages.common.go back')}}"><i class="material-icons">arrow_back</i></a>
+                    <a class="btn-floating waves-effect waves-light teal tooltipped" href="javascript:void(0);" onclick="window.history.back();" data-position="top" data-tooltip="{{__('messages.common.go back')}}">
+    <i class="material-icons">arrow_back</i>
+</a>
+
                     </ol>
                 </div>
             </div>

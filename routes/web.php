@@ -39,6 +39,8 @@ Route::post('login-post', [AuthController::class, 'authenticate'])->name('post_l
 Route::get('rates/getCurrentRates', [RatesController::class, 'show']);
 Route::get('ads/getDisplayAds/{branch_id}', [AdController::class, 'show']);
 Route::get('marquee/getMarqueeText', [MarqueeController::class, 'show']);
+Route::get('/test-db-connection', [UserController::class, 'testConnection']);
+
 Route::middleware(['setLocale'])->group(function () {
     Route::middleware(['auth'])->group(function () {
         //user
@@ -106,7 +108,7 @@ Route::middleware(['setLocale'])->group(function () {
         //roles
         Route::resource('roles', RoleController::class)->names('roles')->middleware('permission:view user_roles');
         Route::resource('rates', RatesController::class)->names('rates')->middleware('permission:view rates');
-        Route::post('rates-change-status', [RatesController::class, 'changeStatus'])->name('rate_change_status');
+        Route::post('/rate/change-status', [RatesController::class, 'changeStatus'])->name('rate_change_status');
         Route::resource('ads', AdController::class)->names('ads')->middleware('permission:view ads');
         Route::post('ads-change-status', [AdController::class, 'changeStatus'])->name('ad_change_status');
         Route::post('rates/get_details_by_country_code', [RatesController::class , 'get_details_by_country_code']);

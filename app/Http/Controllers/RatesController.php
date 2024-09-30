@@ -182,20 +182,25 @@ class RatesController extends Controller
 
     public function changeStatus(Request $request)
     {
-        $rate  = Service::find($request->id);
-
+        $rate = Rate::find($request->id); // Ensure you are fetching the correct model
+    
+        if (!$rate) {
+            return response()->json(['message' => 'Rate not found'], 404);
+        }
+    
         DB::beginTransaction();
         try {
-            $rate->status = !$rate->status;
+            $rate->status = $rate->status ? 0 : 1; // Toggle the status
             $rate->save();
+            DB::commit();
+            return response()->json(['message' => 'Success', 'status' => $rate->status], 200);
         } catch (\Exception $e) {
             DB::rollback();
-            $request->session()->flash('error', 'Something Went Wrong');
-            return 'Something went wrong';
+            Log::error('Change Status Error', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Something went wrong'], 500);
         }
-        DB::commit();
-        $request->session()->flash('success', 'Succesfully updated the record');
-        return 'Success';
     }
-
+    
+    
+    
 }

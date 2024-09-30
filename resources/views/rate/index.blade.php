@@ -55,14 +55,14 @@
                                                     <td>
                                                         <div class="switch">
                                                             <label>
-                                                                <input type="checkbox" {{$rate->status?'checked':''}} onchange="changeStatus({{$rate->id}})">
+                                                                <input type="checkbox" {{$rate->status ? 'checked' : ''}} onchange="changeStatus({{$rate->id}}, this)">
                                                                 <span class="lever"></span>
                                                             </label>
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <a class="btn-floating btn-action waves-effect waves-light orange tooltipped" href="{{route('rates.edit',[$rate->id])}}" data-position=top data-tooltip="{{__('messages.common.edit')}}"><i class="material-icons">edit</i></a>
-                                                        <a class="btn-floating btn-action waves-effect waves-light red tooltipped frmsubmit" href="{{route('rates.destroy',[$rate->id])}}" data-position=top data-tooltip="{{__('messages.common.delete')}}" method="DELETE"><i class="material-icons">delete</i></a>
+                                                        <a class="btn-floating btn-action waves-effect waves-light orange tooltipped" href="{{route('rates.edit',[$rate->id])}}" data-position="top" data-tooltip="{{__('messages.common.edit')}}"><i class="material-icons">edit</i></a>
+                                                        <a class="btn-floating btn-action waves-effect waves-light red tooltipped frmsubmit" href="{{route('rates.destroy',[$rate->id])}}" data-position="top" data-tooltip="{{__('messages.common.delete')}}" method="DELETE"><i class="material-icons">delete</i></a>
                                                     </td>
                                                 </tr>
                                                 @endforeach
@@ -84,32 +84,43 @@
 <script src="{{asset('app-assets/vendors/data-tables/extensions/responsive/js/dataTables.responsive.min.js')}}"></script>
 <script src="{{asset('app-assets/vendors/data-tables/js/dataTables.select.min.js')}}"></script>
 <script>
-    $('#page-length-option').DataTable({
-        "responsive": true,
-        "autoHeight": false,
-        "scrollX": true,
-        "lengthMenu": [
-            [10, 25, 50, -1],
-            [10, 25, 50, "All"]
-        ]
-    });
     $(document).ready(function() {
+        $('#page-length-option').DataTable({
+            "responsive": true,
+            "autoHeight": false,
+            "scrollX": true,
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ]
+        });
         $('body').addClass('loaded');
     });
-</script>
-<script>
-    function changeStatus(id) {
+
+    function changeStatus(id, element) {
         $('body').removeClass('loaded');
-        var data = "id=" + id + '&_token={{csrf_token()}}';
+        var data = {
+            id: id,
+            _token: '{{ csrf_token() }}'
+        };
         $.ajax({
             type: "POST",
-            url: "{{Route('rate_change_status')}}",
+            url: "{{ route('rate_change_status') }}",
             data: data,
-            cache: false,
             success: function(response) {
-                location.reload(true);
+                $('body').addClass('loaded');
+                if (response.message === 'Success') {
+                    element.checked = response.status;
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function() {
+                alert('An error occurred. Please try again.');
+                $('body').addClass('loaded');
             }
         });
     }
 </script>
+
 @endsection

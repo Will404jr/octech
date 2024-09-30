@@ -29,6 +29,10 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Throwable;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
+
 
 class AuthController extends Controller
 {
@@ -70,70 +74,147 @@ class AuthController extends Controller
     }
     public function authenticate(Request $request)
     {
-
+        // Check if it's an email or username login attempt
         if (filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
+            // Validate email and password credentials for email login
             $credentials = $request->validate([
                 'email' => ['required', 'email'],
                 'password' => ['required'],
             ]);
-
+    
+            // Attempt to authenticate with the local database
             if (Auth::attempt($credentials)) {
                 $request->session()->regenerate();
-                $settings = Setting::first();
-                session(['settings' => $settings]);
-                if ($settings->language_id) {
-                    session(['locale' => $settings->language->code]);
-                }
-                return redirect()->route('branches', [
-                    'branches' => Branch::get()
-                ])->with('success', 'Succesfully Logged in!');
+                $this->storeSettingsInSession();
+                return $this->redirectBasedOnRoleOrPermission();
             }
-
+    
+            // Authentication failed for email login
             return back()->withErrors([
                 'error' => 'The provided credentials do not match our records.',
             ]);
         } else {
-
+            // Validate username and password credentials (username stored as 'email' for this validation)
             $credentials = $request->validate([
-                'email' => ['required'],
+                'email' => ['required'], // 'email' refers to username in this case
                 'password' => ['required'],
             ]);
-
+    
             try {
-                // $ldapHelper = new LDAPAuth();
-                // if ($ldapHelper->attemptLogin($credentials['email'], $credentials['password'])) {
-                $userId = User::where('username', $credentials['email'])->first()->id;
-                Auth::loginUsingId($userId);
-                $request->session()->regenerate();
-                $settings = Setting::first();
-                session(['settings' => $settings]);
-                if ($settings->language_id) {
-                    session(['locale' => $settings->language->code]);
+                // Retrieve the user by username in the local database
+                $user = User::where('username', $credentials['email'])->firstOrFail();
+    
+                // Fetch the corresponding branch
+                $branch = Branch::find($user->branch_id);
+    
+                if (!$branch) {
+                    return back()->withErrors([
+                        'error' => 'Branch not found for this user.',
+                    ]);
                 }
-                if (auth()->user()->roles[0]->name == 'Super-Admin') {
-                    return redirect()->route('branches', [
-                        'branches' => Branch::get()
-                    ])->with('success', 'Succesfully Logged in!');
+    
+                // Use the branch's LDAP credentials
+                $ldap_host = $branch->db_host; // Corresponds to LDAP host
+                $ldap_dn = $branch->db_username; // Corresponds to LDAP distinguished name
+                $ldap_password = $branch->db_password; // Corresponds to LDAP password
+    
+                // Establish LDAP connection
+                $ldapConnection = ldap_connect($ldap_host);
+                ldap_set_option($ldapConnection, LDAP_OPT_PROTOCOL_VERSION, 3);
+    
+                if ($ldapConnection) {
+                    // Attempt LDAP bind using branch credentials
+                    // Remove the "@" symbol to not suppress errors
+                    $ldapBind = ldap_bind($ldapConnection, $ldap_dn, $credentials['password']);
+    
+                    if ($ldapBind) {
+                        // LDAP bind successful, authenticate the user in the app
+                        Auth::loginUsingId($user->id);
+                        $request->session()->regenerate();
+                        $this->storeSettingsInSession();
+                        return $this->redirectBasedOnRoleOrPermission();
+                    } else {
+                        // LDAP bind failed (invalid credentials), fetch error message
+                        $ldapError = ldap_error($ldapConnection);
+                        return back()->withErrors([
+                            'error' => 'Invalid LDAP credentials: ' . $ldapError,
+                        ]);
+                    }
                 } else {
-                    return redirect()->route('queues.index', [
-                        'users' => User::with('branch')->where('branch_id', auth()->user()->branch_id)->get(),
-                        'branches' => Branch::get()
-                    ])->with('success', 'Succesfully Logged in!');
+                    // LDAP connection failed
+                    return back()->withErrors([
+                        'error' => 'Failed to connect to LDAP server for this branch.',
+                    ]);
                 }
-                //}
-            } catch (Exception $e) {
-                Log::info('error', [$e->getMessage()]);
+            } catch (\Exception $e) {
+                Log::error('Login error', ['message' => $e->getMessage()]);
                 return back()->withErrors([
                     'error' => 'The provided credentials do not match our records.',
                 ]);
             }
-
-            return back()->withErrors([
-                'error' => 'The provided credentials do not match our records.',
-            ]);
         }
     }
-    public function logout()
+    
+    
+    private function storeSettingsInSession()
+    {
+        $settings = Setting::first();
+        session(['settings' => $settings]);
+    
+        if ($settings->language_id) {
+            session(['locale' => $settings->language->code]);
+        }
+    }
+    
+    private function redirectBasedOnRoleOrPermission()
+    {
+        $user = auth()->user();
+    
+        if ($user->hasRole('Super-Admin')) {
+            return redirect()->route('branches', [
+                'branches' => Branch::all()
+            ])->with('success', 'Successfully Logged in!');
+        }
+    
+        if ($user->can('view branches')) {
+            return redirect()->route('branches.index', [
+                'users' => User::with('branch')->where('branch_id', $user->branch_id)->get(),
+                'branches' => Branch::all()
+            ])->with('success', 'Successfully Logged in!');
+        }
+
+        if ($user->can('view queus')) {
+            return redirect()->route('queus.index');
+        }
+    
+        if ($user->can('view rates')) {
+            return redirect()->route('rates.index');
+        }
+
+        if ($user->can('view ads')) {
+            return redirect()->route('ads.index');
+        }
+
+        if ($user->can('view users')) {
+            return redirect()->route('users.index');
+        }
+
+        if ($user->can('view roles')) {
+            return redirect()->route('roles.index');
+        }
+    
+        if ($user->can('view settings')) {
+            return redirect()->route('settings.index');
+        }
+    
+        if ($user->can('view profile')) {
+            return redirect()->route('profile');
+        }
+    
+        return redirect()->route('branches.index');
+    }
+    
+        public function logout()
     {
         session()->invalidate();
         Auth::guard('web')->logout();

@@ -128,8 +128,8 @@ class AdController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Ad $ad)
+     * 
+     */ public function update(Request $request, Ad $ad)
     {
         try {
             // $request->validate([

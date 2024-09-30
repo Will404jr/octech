@@ -1,130 +1,92 @@
 <!doctype html>
-   <html>
-         <head>
-            <meta charset='utf-8'>
-            <meta name='viewport' content='width=device-width, initial-scale=1'>
-            <title>Exchange Rates</title>
-            <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' rel='stylesheet'>
-            <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css' rel='stylesheet'>
-            <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
-            <style>::-webkit-scrollbar {
-               width: 8px;
+<html lang="en">
+
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>Exchange Rates</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+        }
+
+        .container {
+            width: 100%;
+            padding: 3px;
+            max-width: 900px; /* Adjusted width */
+            background-color: #ffffff;
+            border-radius: 8px;
+            /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        thead {
+            background-color: #f2f2f2;
+        }
+
+        th {
+            font-weight: bold;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #ddd;
+        }
+
+        tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .scrollable-table {
+            overflow-x: auto;
+        }
+
+        @media (max-width: 768px) {
+            th, td {
+                padding: 8px;
             }
-            /* Track */
-            ::-webkit-scrollbar-track {
-               background: #f1f1f1; 
-            }
-            
-            /* Handle */
-            ::-webkit-scrollbar-thumb {
-               background: #888; 
-            }
-            
-            /* Handle on hover */
-            ::-webkit-scrollbar-thumb:hover {
-               background: #555; 
-            } .content-info {
-    padding: 40px 0;
-    background-size: cover!important;
-    background-position: top center!important;
-    background-repeat: no-repeat!important;
-    position: relative;
-   padding-bottom:100px;
-}
-
-table {
-    width: 100%;
-    background: #fff;
-    border: 1px solid #dedede;
-}
-
-table thead tr th {
-    padding: 20px;
-    border: 1px solid #dedede;
-    color: #000;
-}
-
-table.table-striped tbody tr:nth-of-type(odd) {
-    background: #f9f9f9;
-}
-
-table.result-point tr td.number {
-    width: 100px;
-    position: relative;
-} 
-
-.text-left {
-    text-align: left!important;
-}
-
-table tr td {
-    padding: 10px 20px;
-    border: 1px solid #dedede;
-}
-table.result-point tr td .fa.fa-caret-up {
-    color: green;
-}
-
-table.result-point tr td .fa {
-    font-size: 20px;
-    position: absolute;
-    right: 20px;
-}
-
-table tr td {
-    padding: 10px 40px;
-    border: 1px solid #dedede;
-}
-
-table tr td img {
-    max-width: 32px;
-    float: left;
-    margin-right: 11px;
-    margin-top: 1px;
-    border: 1px solid #dedede;
-}
-
-</style>
+        }
+    </style>
 </head>
-<body>
-    <div class="col-lg-4">
-<section class="content-info">
-   <div class="container">
-      <div class="row">
-            <table class="table-striped table-responsive">
-               <thead class="point-table-head">
-                <tr>
-                    <th></th>
-                    <th style="font-size:20px;font-weight:bold;line-height:1.2">{{__('messages.rate_page.buying_rate')}}</th>
-                    <th style="font-size:20px;font-weight:bold;line-height:1.2">{{__('messages.rate_page.selling_rate')}}</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($rates as $key=>$rate)
-                <tr>
-                    <td class="text-left">
-                        <img src="{{$rate->country_flag}}" alt="Uganda"><span>{{$rate->currency_code}}</span>
-                     </td>
-                    <td style="font-size:22px;font-weight:bold;line-height:1.2">{{$rate->buying_rate}}</td>
-                    <td style="font-size:22px;font-weight:bold;line-height:1.2">{{$rate->selling_rate}}</td>
-                </tr>
-                @endforeach
-            </tbody>
-            </table>
-         </div>
-   </div>
-   
-</section>
-</div>
-<script type='text/javascript' src='https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js'></script>
-<script type='text/javascript' src='#'></script>
-<script type='text/javascript' src='#'></script>
-<script type='text/javascript' src='#'></script>
-<script type='text/javascript'>var myLink = document.querySelector('a[href="#"]');
-myLink.addEventListener('click', function(e) {
-    e.preventDefault();
-});
-</script>
 
+<body>
+    <div class="container">
+        <section class="scrollable-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Buy</th>
+                        <th>Sell</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($rates as $key => $rate)
+                    <tr>
+                        <td class="text-left">
+                            <!-- <img src="{{ $rate->country_flag }}" alt="{{ $rate->currency_code }}" class="w-8 h-8 rounded-full border"> -->
+                            <span class="text-sm font-bold">{{ $rate->currency_code }}</span>
+                        </td>
+                        <td>{{ round($rate->buying_rate) }}</td>
+                        <td>{{ round($rate->selling_rate) }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </section>
+    </div>
 </body>
+
 </html>

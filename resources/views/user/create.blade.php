@@ -21,7 +21,7 @@
                 <div class="col s12 m12 l12  offset-m1">
                     <div class="card-panel">
                         <div class="row">
-                            <form id="user_form" method="post" action="{{route('users.store')}}" enctype="multipart/form-data">
+                            <form id="user_form" enctype="multipart/form-data">
                                 {{@csrf_field()}}
                                 <div class="row">
                                     <div class="row form_align">
@@ -29,7 +29,7 @@
                                             <label for="first_name">{{__('messages.user_page.first_name')}}</label>
                                             <input id="first_name" name="first_name" type="text" value="{{old('first_name')}}" data-error=".first_name">
                                             <div class="first_name">
-                                                @if ($errors->has('name'))
+                                                @if ($errors->has('first_name'))
                                                 <span class="text-danger errbk">{{ $errors->first('first_name') }}</span>
                                                 @endif
                                             </div>
@@ -38,7 +38,7 @@
                                             <label for="last_name">{{__('messages.user_page.last_name')}}</label>
                                             <input id="last_name" name="last_name" type="text" value="{{old('last_name')}}" data-error=".last_name">
                                             <div class="last_name">
-                                                @if ($errors->has('name'))
+                                                @if ($errors->has('last_name'))
                                                 <span class="text-danger errbk">{{ $errors->first('last_name') }}</span>
                                                 @endif
                                             </div>
@@ -111,7 +111,7 @@
                                         </div>
                                     </div>
                                     <div class="input-field col s12">
-                                        <button class="btn waves-effect waves-light right submit" type="submit">{{__('messages.common.submit')}}
+                                        <button class="btn waves-effect waves-light right submit" type="button" id="submit_button">{{__('messages.common.submit')}}
                                             <i class="mdi-content-send right"></i>
                                         </button>
                                     </div>
@@ -125,13 +125,40 @@
     </div>
 </div>
 @endsection
+
 @section('js')
 <script src="{{asset('app-assets/js/vendors.min.js')}}"></script>
 <script src="{{asset('app-assets/vendors/jquery-validation/jquery.validate.min.js')}}"></script>
+<script src="{{asset('app-assets/vendors/jquery-validation/additional-methods.min.js')}}"></script> <!-- Include this script -->
 <script>
     $(document).ready(function() {
         $('body').addClass('loaded');
     });
+
+    // Handle form submission via AJAX
+    $('#submit_button').on('click', function(e) {
+        e.preventDefault();
+
+        var formData = new FormData($('#user_form')[0]);
+
+        $.ajax({
+            url: '{{ route("users.store") }}',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                alert("User added successfully!");
+                // Optionally, you can clear the form or display a success message
+                $('#user_form')[0].reset();
+            },
+            error: function(xhr) {
+                alert("An error occurred: " + xhr.responseText);
+            }
+        });
+    });
+
+    // Form validation
     $(function() {
         $('#user_form').validate({
             rules: {
@@ -152,14 +179,15 @@
                     email: true,
                 },
                 image: {
-                    accept: "jpg|jpeg|png"
+                    // The extension rule for validating image file types
+                    extension: "jpg|jpeg|png"
                 }
             },
             errorElement: 'div',
             errorPlacement: function(error, element) {
                 var placement = $(element).data('error');
                 if (placement) {
-                    $(placement).append(error)
+                    $(placement).append(error);
                 } else {
                     error.insertAfter(element);
                 }
